@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.huangneng.quant.sync_kline</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/homebrew/bin/python3</string>
+        <string>-m</string>
+        <string>data_hub</string>
+        <string>sync_today</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/huangneng/ComateProjects/comate-zulu-demo-1778467204389</string>
+    <key>StandardOutPath</key>
+    <string>/Users/huangneng/ComateProjects/comate-zulu-demo-1778467204389/logs/sync_kline.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/huangneng/ComateProjects/comate-zulu-demo-1778467204389/logs/sync_kline.log</string>
+    <key>StartCalendarInterval</key>
+    <array>
+        <dict>
+            <key>Hour</key>
+            <integer>16</integer>
+            <key>Minute</key>
+            <integer>00</integer>
+        </dict>
+    </array>
+    <key>RunAtLoad</key>
+    <false/>
+    <key>KeepAlive</key>
+    <false/>
+</dict>
+</plist>

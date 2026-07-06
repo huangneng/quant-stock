@@ -1,0 +1,116 @@
+name: Daily Stock Scan
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [daily-scan, re-push]
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ── 仅全量扫描才需要 ──
+      - name: Restore stock cache
+        if: github.event.action != 're-push'
+        uses: actions/cache@v4
+        with:
+          path: stock_data/cache
+          key: stock-cache-${{ github.run_id }}
+          restore-keys: |
+            stock-cache-
+
+      - name: Check trading day
+        if: github.event.action != 're-push'
+        id: check
+        continue-on-error: true
+        run: python scripts/check_trade_date.py
+
+      - name: Run batch scan
+        if: github.event.action != 're-push' && steps.check.outcome == 'success'
+        run: python -m quant_backtest.batch_scan
+
+      # ── 推送（全量扫描 + 重推都执行）──
+      - name: Send email notification
+        continue-on-error: true
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          FORCE_PUSH: ${{ github.event.action == 're-push' && 'true' || '' }}
+          PUSH_DATE: ${{ github.event.client_payload.date }}
+        run: python scripts/push_email.py
+
+      - name: Send wechat notification
+        continue-on-error: true
+        env:
+          WECHAT_WEBHOOK: ${{ secrets.WECHAT_WEBHOOK }}
+          FORCE_PUSH: ${{ github.event.action == 're-push' && 'true' || '' }}
+          PUSH_DATE: ${{ github.event.client_payload.date }}
+        run: python scripts/push_wechat.py
+
+      - name: Send serverchan notification
+        continue-on-error: true
+        env:
+          SERVERCHAN_KEY: ${{ secrets.SERVERCHAN_KEY }}
+          FORCE_PUSH: ${{ github.event.action == 're-push' && 'true' || '' }}
+          PUSH_DATE: ${{ github.event.client_payload.date }}
+        run: python scripts/push_serverchan.py
+
+      # ── 仅全量扫描才需要 ──
+      - name: Regenerate tracker report
+        if: github.event.action != 're-push' && steps.check.outcome == 'success'
+        continue-on-error: true
+        run: python -m quant_backtest.tracker_report
+
+      - name: Commit results
+        if: github.event.action != 're-push' && steps.check.outcome == 'success'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add stock_data/selections.json stock_data/trade_calendar.json tracker_report/index.html 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "scan: $(date +%Y-%m-%d)"
+          git push
+
+      # ── 仅全量扫描失败时才发故障通知 ──
+      - name: Notify on failure (email)
+        if: failure() && github.event.action != 're-push' && steps.check.outcome == 'success'
+        continue-on-error: true
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+        run: python scripts/push_email.py --error "扫描或推送步骤失败，详见 Actions 日志"
+
+      - name: Notify on failure (wechat)
+        if: failure() && github.event.action != 're-push' && steps.check.outcome == 'success'
+        continue-on-error: true
+        env:
+          WECHAT_WEBHOOK: ${{ secrets.WECHAT_WEBHOOK }}
+        run: python scripts/push_wechat.py --error "扫描或推送步骤失败，详见 Actions 日志"
+
+      - name: Notify on failure (serverchan)
+        if: failure() && github.event.action != 're-push' && steps.check.outcome == 'success'
+        continue-on-error: true
+        env:
+          SERVERCHAN_KEY: ${{ secrets.SERVERCHAN_KEY }}
+        run: python scripts/push_serverchan.py --error "扫描或推送步骤失败，详见 Actions 日志"

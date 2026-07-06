@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# 大文件 / 生成产物
+*.png
+!mascot/*.png
+*.pkl
+*.parquet
+
+# 行情缓存（每次 actions 自行恢复）
+stock_data/cache/
+
+# 报告产物
+report_output/
+tracker_report/charts/
+tracker_report/report.pdf
+quant_backtest/charts/
+quant_backtest/*.html
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
+
+# 本地运行产物（launchd）
+logs/
+stock_data/.last_run_date
+stock_data/selections.backup.json
+quant.env
+.quant.env
+
+# 选股后走势研究产物
+stock_research/cache/
+stock_research/output/
+stock_research/notebooks/
