@@ -9156,7 +9156,11 @@
         "auction_strength": null,
         "auction_gap_pct": 0.0248,
         "auction_breakout_pct": -0.0503,
-        "conditions": {}
+        "conditions": {},
+        "next_auction_date": "2026-07-06",
+        "next_auction_strength": 0.4,
+        "next_auction_gap_pct": 0.0389,
+        "next_auction_breakout_pct": 0.0389
       },
       {
         "code": "sz.002747",
@@ -9172,7 +9176,11 @@
         "auction_strength": null,
         "auction_gap_pct": 0.0324,
         "auction_breakout_pct": -0.0185,
-        "conditions": {}
+        "conditions": {},
+        "next_auction_date": "2026-07-06",
+        "next_auction_strength": 0.4,
+        "next_auction_gap_pct": 0.0076,
+        "next_auction_breakout_pct": 0.0076
       },
       {
         "code": "sh.688017",
@@ -9188,7 +9196,11 @@
         "auction_strength": null,
         "auction_gap_pct": 0.0314,
         "auction_breakout_pct": -0.0699,
-        "conditions": {}
+        "conditions": {},
+        "next_auction_date": "2026-07-06",
+        "next_auction_strength": 0.4,
+        "next_auction_gap_pct": -0.0266,
+        "next_auction_breakout_pct": -0.0417
       },
       {
         "code": "sz.301165",
@@ -9204,7 +9216,11 @@
         "auction_strength": null,
         "auction_gap_pct": 0.2,
         "auction_breakout_pct": 0.118,
-        "conditions": {}
+        "conditions": {},
+        "next_auction_date": "2026-07-06",
+        "next_auction_strength": 0.4,
+        "next_auction_gap_pct": 0.0199,
+        "next_auction_breakout_pct": -0.054
       },
       {
         "code": "sz.300607",
@@ -9220,7 +9236,11 @@
         "auction_strength": null,
         "auction_gap_pct": 0.0272,
         "auction_breakout_pct": -0.0317,
-        "conditions": {}
+        "conditions": {},
+        "next_auction_date": "2026-07-06",
+        "next_auction_strength": 0.4,
+        "next_auction_gap_pct": -0.0557,
+        "next_auction_breakout_pct": -0.0881
       },
       {
         "code": "sz.300503",
@@ -9236,7 +9256,11 @@
         "auction_strength": null,
         "auction_gap_pct": 0.019,
         "auction_breakout_pct": -0.0568,
-        "conditions": {}
+        "conditions": {},
+        "next_auction_date": "2026-07-06",
+        "next_auction_strength": 0.4,
+        "next_auction_gap_pct": -0.0082,
+        "next_auction_breakout_pct": -0.0306
       }
     ]
   }
