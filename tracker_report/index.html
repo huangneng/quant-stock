@@ -6286,17 +6286,7 @@
         </div>
     </div>
     <script>
-        (function(){
-            try {
-                var key = 'qr_modal_closed';
-                var last = localStorage.getItem(key);
-                if (last && Date.now() - parseInt(last) < 7*24*3600*1000) {
-                    document.getElementById('qr-modal').style.display = 'none';
-                }
-            } catch(e) {}
-        })();
         function closeQrModal(){
-            try { localStorage.setItem('qr_modal_closed', String(Date.now())); } catch(e) {}
             document.getElementById('qr-modal').style.display = 'none';
         }
     </script>
