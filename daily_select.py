@@ -55,13 +55,13 @@ def _is_real_stock(code: str) -> bool:
     return False
 
 
-def _prefilter_cache_has_bad_zero_amount(cache_df: pd.DataFrame, end_date: str, min_amount: float, intraday: bool) -> bool:
+def _prefilter_cache_has_bad_zero_amount(cache_df: pd.DataFrame, end_date: str, min_amount: float) -> bool:
     """识别预筛缓存中异常的 0 成交额记录。
 
     历史盘后缓存如果把近期高成交股票写成 0，会导致候选池漏选。
     只用于判断缓存是否可信，不直接修改选股结果。
     """
-    if intraday or cache_df is None or cache_df.empty or 'amount' not in cache_df.columns:
+    if cache_df is None or cache_df.empty or 'amount' not in cache_df.columns:
         return False
     zero_df = cache_df[cache_df['amount'].fillna(0) <= 0]
     if zero_df.empty:
@@ -99,21 +99,14 @@ def _prefilter_cache_has_bad_zero_amount(cache_df: pd.DataFrame, end_date: str, 
     return False
 
 
-def prefilter_by_amount(stock_list, end_date: str, min_amount: float = 3e9, intraday: bool = False):
+def prefilter_by_amount(stock_list, end_date: str, min_amount: float = 3e9):
     """对 stock_list 在 end_date 当日做成交额预筛（统一走 data_hub.api）。
-    缓存：stock_data/cache/prefilter_amount_{end_date}[_intraday_{HHMM}].csv
-    盘中模式按 10 分钟时段分桶缓存（同一时段内复用，跨时段强制重拉）。
+    缓存：stock_data/cache/prefilter_amount_{end_date}.csv
     返回 [(code, name), ...]
     """
     today_str = pd.Timestamp.now().strftime('%Y-%m-%d')
-    # 盘后定稿：今日 + 已收盘(>=15:00) + 非盘中。此时必须使用收盘快照全量数据，
-    # 绝不复用盘中分桶缓存（盘中快照成交额不完整，会导致漏选）。
-    is_post_close = (not intraday) and end_date == today_str and pd.Timestamp.now().time() >= dt_time(15, 0)
-    if intraday:
-        now = pd.Timestamp.now()
-        bucket = f'{now.hour:02d}{(now.minute // 10) * 10:02d}'
-        cache_path = PREFILTER_CACHE_DIR / f'prefilter_amount_{end_date}_intraday_{bucket}.csv'
-    elif is_post_close:
+    is_post_close = end_date == today_str and pd.Timestamp.now().time() >= dt_time(15, 0)
+    if is_post_close:
         cache_path = PREFILTER_CACHE_DIR / f'prefilter_amount_{end_date}_final.csv'
     else:
         cache_path = PREFILTER_CACHE_DIR / f'prefilter_amount_{end_date}.csv'
@@ -131,7 +124,7 @@ def prefilter_by_amount(stock_list, end_date: str, min_amount: float = 3e9, intr
                     missing = len(valid_codes) - covered
                     print(f"[预筛] 缓存覆盖率不足 {coverage:.1%}（缺失 {missing}/{len(valid_codes)}），重新扫描")
                     cache_path.unlink(missing_ok=True)
-                elif _prefilter_cache_has_bad_zero_amount(cache_df, end_date, min_amount, intraday):
+                elif _prefilter_cache_has_bad_zero_amount(cache_df, end_date, min_amount):
                     cache_path.unlink(missing_ok=True)
                 else:
                     kept = cache_df[cache_df['amount'] >= min_amount].sort_values('amount', ascending=False)
@@ -360,58 +353,56 @@ def detect_today_signal(code: str, hist: pd.DataFrame, today: str):
 
 
 # ---------- 3. 主流程 ----------
-def select(today: str, min_amount: float = 3e9, throttle: float = 0.02, intraday: bool = False):
+def select(today: str, min_amount: float = 3e9, throttle: float = 0.02):
     """运行选股流程，返回 DataFrame。"""
     full_list = get_stock_list()
     full_list = [(c, n) for c, n in full_list if _is_real_stock(c)]
     print(f"[选股] 全市场（仅个股，排除指数/ETF）{len(full_list)} 只")
 
-    candidates = prefilter_by_amount(full_list, today, min_amount=min_amount, intraday=intraday)
+    candidates = prefilter_by_amount(full_list, today, min_amount=min_amount)
     candidates = [(c, n) for c, n in candidates if _is_real_stock(c)]
-    if not intraday:
-        _warn_completeness(today, [c for c, _ in candidates], scope='候选池')
+    _warn_completeness(today, [c for c, _ in candidates], scope='候选池')
     if not candidates:
         print("[选股] 预筛后为空，结束")
         return pd.DataFrame()
 
     # 新高榜安全网：把当日创新高、但被成交额预筛挡掉的票补入候选，避免漏选。
-    # 仅盘后(非 intraday)启用；接口异常降级为空集，不影响主流程。
+    # 接口异常降级为空集，不影响主流程。
     # 安全网补入的票同样须满足 min_amount 门槛，从预筛缓存中查实际成交额。
-    if not intraday:
-        cand_codes = {c for c, _ in candidates}
-        try:
-            nh = hub.get_new_high_stocks()
-        except Exception:
-            nh = set()
-        if nh:
-            # 从预筛缓存读成交额（_final 优先，否则用当日普通缓存）
-            _amount_map: dict = {}
-            for _cache_suffix in (f'prefilter_amount_{today}_final.csv',
-                                  f'prefilter_amount_{today}.csv'):
-                _cp = PREFILTER_CACHE_DIR / _cache_suffix
-                if _cp.exists():
-                    try:
-                        _cdf = pd.read_csv(_cp, dtype={'code': str})
-                        _amount_map = dict(zip(_cdf['code'], _cdf['amount'].astype(float)))
-                    except Exception:
-                        pass
-                    break
+    cand_codes = {c for c, _ in candidates}
+    try:
+        nh = hub.get_new_high_stocks()
+    except Exception:
+        nh = set()
+    if nh:
+        # 从预筛缓存读成交额（_final 优先，否则用当日普通缓存）
+        _amount_map: dict = {}
+        for _cache_suffix in (f'prefilter_amount_{today}_final.csv',
+                              f'prefilter_amount_{today}.csv'):
+            _cp = PREFILTER_CACHE_DIR / _cache_suffix
+            if _cp.exists():
+                try:
+                    _cdf = pd.read_csv(_cp, dtype={'code': str})
+                    _amount_map = dict(zip(_cdf['code'], _cdf['amount'].astype(float)))
+                except Exception:
+                    pass
+                break
 
-            name_map = dict(full_list)
-            extra = []
-            for c in nh:
-                if c not in name_map or c in cand_codes or not _is_real_stock(c):
-                    continue
-                amt = _amount_map.get(c, None)
-                if amt is not None and amt < min_amount:
-                    continue  # 成交额不足，不补入
-                extra.append((c, name_map.get(c, '')))
-            if extra:
-                print(f"[安全网] 新高榜补入 {len(extra)} 只（绕过成交额预筛，成交额≥{min_amount/1e8:.0f}亿或无数据）")
-                candidates = candidates + extra
+        name_map = dict(full_list)
+        extra = []
+        for c in nh:
+            if c not in name_map or c in cand_codes or not _is_real_stock(c):
+                continue
+            amt = _amount_map.get(c, None)
+            if amt is not None and amt < min_amount:
+                continue  # 成交额不足，不补入
+            extra.append((c, name_map.get(c, '')))
+        if extra:
+            print(f"[安全网] 新高榜补入 {len(extra)} 只（绕过成交额预筛，成交额≥{min_amount/1e8:.0f}亿或无数据）")
+            candidates = candidates + extra
 
     today_iso = pd.Timestamp.now().strftime('%Y-%m-%d')
-    require_today = intraday or (today == today_iso)
+    require_today = (today == today_iso)
 
     # 拉 ~ 220 个自然日（≈150 交易日），保证 PRE_DAYS=100 充足
     start_date = (datetime.strptime(today, '%Y-%m-%d') - pd.Timedelta(days=220)).strftime('%Y-%m-%d')
@@ -478,13 +469,12 @@ def select(today: str, min_amount: float = 3e9, throttle: float = 0.02, intraday
 
 
 # ---------- 4. CSV 输出 ----------
-def write_csv(df: pd.DataFrame, today: str, intraday: bool = False):
-    prefix = 'intraday_selections_' if intraday else 'daily_selections_'
-    out_path = OUTPUT_DIR / f'{prefix}{today}.csv'
+def write_csv(df: pd.DataFrame, today: str):
+    out_path = OUTPUT_DIR / f'daily_selections_{today}.csv'
     df.to_csv(out_path, index=False)
     print(f"[选股] CSV → {out_path}（{len(df)} 行）")
 
-    latest = OUTPUT_DIR / (f'{prefix}latest.csv'.replace('selections_latest', 'selections_latest'))
+    latest = OUTPUT_DIR / 'daily_selections_latest.csv'
     try:
         if latest.exists() or latest.is_symlink():
             latest.unlink()
@@ -559,79 +549,33 @@ def refresh_tracker_report():
         print(f"[选股] 刷新 tracker_report 失败：{e}")
 
 
-def write_intraday_json(df: pd.DataFrame, today_iso: str):
-    """盘中扫描独立 json，不污染 selections.json。"""
-    import json
-    today_key = today_iso.replace('-', '')
-    stocks = []
-    if df is not None and not df.empty:
-        for _, s in df.iterrows():
-            sig = _SIGNAL_TO_TRACKER.get(s['signal_type'], 'breakthrough')
-            price = float(s['price'])
-            stocks.append({
-                'code': s['code'],
-                'name': s['name'],
-                'price': price,
-                'buy_price': price,
-                'signal_type': sig,
-                'is_limit_up': bool(s.get('is_limit_up', sig == 'one_word')),
-                'pct_change': float(s['pct']),
-                'amount': float(s['amount_yi']) * 1e8,
-                'star': int(s.get('star', 0)),
-                'score': float(s.get('score', 0)),
-                'auction_strength': float(s.get('auction_strength')) if pd.notna(s.get('auction_strength')) else None,
-                'auction_gap_pct': float(s.get('auction_gap_pct')) if pd.notna(s.get('auction_gap_pct')) else None,
-                'auction_breakout_pct': float(s.get('auction_breakout_pct')) if pd.notna(s.get('auction_breakout_pct')) else None,
-            })
-    payload = {
-        'date': today_key,
-        'scan_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        'stocks': stocks,
-    }
-    out = OUTPUT_DIR / 'intraday_latest.json'
-    with open(out, 'w', encoding='utf-8') as f:
-        json.dump(payload, f, ensure_ascii=False, indent=2)
-    print(f"[选股] intraday_latest.json 已更新（{today_key} → {len(stocks)} 只）")
-
 
 def main():
     parser = argparse.ArgumentParser(description='每日选股 + 推荐星级')
     parser.add_argument('--date', default=None, help='交易日 YYYY-MM-DD，默认今日')
-    parser.add_argument('--min-amount', type=float, default=None, help='当日成交额下限，默认盘后 30 亿 / 盘中 25 亿')
-    parser.add_argument('--intraday', action='store_true', help='盘中扫描模式（独立产物，不更新 selections.json）')
+    parser.add_argument('--min-amount', type=float, default=None, help='当日成交额下限，默认 30 亿')
     args = parser.parse_args()
 
     today = args.date or datetime.now().strftime('%Y-%m-%d')
-    if args.min_amount is not None:
-        min_amount = args.min_amount
-    else:
-        min_amount = 2.5e9 if args.intraday else 3e9
+    min_amount = args.min_amount if args.min_amount is not None else 3e9
+    print(f"[daily_select] {today}  min_amount={min_amount/1e8:.0f}亿")
 
-    mode_tag = '[盘中]' if args.intraday else ''
-    print(f"[daily_select] {mode_tag} {today}  min_amount={min_amount/1e8:.0f}亿")
-
-    df = select(today, min_amount=min_amount, intraday=args.intraday)
+    df = select(today, min_amount=min_amount)
     if df.empty:
         print("[选股] 今日 0 只候选")
         empty = pd.DataFrame(columns=['code', 'name', 'signal_type', 'signal_subtypes',
                                       'price', 'pct', 'amount_yi', 'score', 'star'])
-        write_csv(empty, today, intraday=args.intraday)
-        if args.intraday:
-            write_intraday_json(empty, today)
-        else:
-            update_selections_json(empty, today)
-            refresh_tracker_report()
+        write_csv(empty, today)
+        update_selections_json(empty, today)
+        refresh_tracker_report()
         return
 
-    write_csv(df, today, intraday=args.intraday)
-    if args.intraday:
-        write_intraday_json(df, today)
-    else:
-        update_selections_json(df, today)
-        refresh_tracker_report()
+    write_csv(df, today)
+    update_selections_json(df, today)
+    refresh_tracker_report()
 
     # 控制台摘要
-    print(f"\n[{'盘中' if args.intraday else 'Top'} 候选]")
+    print("\n[Top 候选]")
     cols = ['code', 'name', 'signal_type', 'pct', 'amount_yi', 'star', 'score']
     print(df[cols].head(15).to_string(index=False))
 

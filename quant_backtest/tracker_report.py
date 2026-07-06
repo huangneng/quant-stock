@@ -146,52 +146,6 @@ def _fmt_pct(value):
     return '{:+.2f}%'.format(v * 100)
 
 
-def _auction_html(record: dict) -> str:
-    strength = _safe_float(record.get('next_auction_strength'))
-    gap = record.get('next_auction_gap_pct')
-    breakout = record.get('next_auction_breakout_pct')
-    title = record.get('next_auction_date') or ''
-    title_attr = ' title="次日竞价 ' + str(title) + '"' if title else ''
-    if strength is None:
-        strength_html = '<span class="auction-value auction-weak"' + title_attr + '>-</span>'
-    else:
-        if strength >= 0.75:
-            klass = 'auction-strong'
-        elif strength >= 0.5:
-            klass = 'auction-mid'
-        else:
-            klass = 'auction-weak'
-        strength_html = '<span class="auction-value ' + klass + '"' + title_attr + '>' + '{:.2f}'.format(strength) + '</span>'
-    return (
-        strength_html
-        + '<span class="auction-sub">高开 ' + _fmt_pct(gap) + '</span>'
-        + '<span class="auction-sub">突破 ' + _fmt_pct(breakout) + '</span>'
-    )
-
-
-def _same_day_auction_html(record: dict) -> str:
-    """待突破列表专用：展示当日竞价强度（auction_*），辅助判断资金动向。"""
-    strength = _safe_float(record.get('auction_strength'))
-    gap = record.get('auction_gap_pct')
-    breakout = record.get('auction_breakout_pct')
-    date = record.get('date', '')
-    date_str = date[:4] + '-' + date[4:6] + '-' + date[6:8] if len(date) == 8 else date
-    title_attr = ' title="当日竞价 ' + date_str + '"' if date_str else ''
-    if strength is None:
-        strength_html = '<span class="auction-value auction-weak"' + title_attr + '>-</span>'
-    else:
-        if strength >= 0.75:
-            klass = 'auction-strong'
-        elif strength >= 0.5:
-            klass = 'auction-mid'
-        else:
-            klass = 'auction-weak'
-        strength_html = '<span class="auction-value ' + klass + '"' + title_attr + '>' + '{:.2f}'.format(strength) + '</span>'
-    return (
-        strength_html
-        + '<span class="auction-sub">高开 ' + _fmt_pct(gap) + '</span>'
-        + '<span class="auction-sub">突破 ' + _fmt_pct(breakout) + '</span>'
-    )
 
 
 def _rocket_html(record: dict) -> str:
@@ -823,16 +777,10 @@ def _build_near_breakout_pool(today_iso: str, selected_codes: set, limit: int = 
             if feat is None:
                 star = 0
                 score = 0.0
-                auction_strength = None
-                auction_gap_pct = None
-                auction_breakout_pct = None
             else:
                 sc = recommender_score(feat)
                 star = int(sc.get('star', 0))
                 score = float(sc.get('score', 0.0))
-                auction_strength = sc.get('dims', {}).get('auction_strength')
-                auction_gap_pct = feat.get('auction_gap_pct')
-                auction_breakout_pct = feat.get('auction_breakout_pct')
             rows.append({
                 'date': today_iso.replace('-', ''),
                 'code': code,
@@ -842,9 +790,6 @@ def _build_near_breakout_pool(today_iso: str, selected_codes: set, limit: int = 
                 'amount': float(today_row['amount']) if pd.notna(today_row['amount']) else 0.0,
                 'rec_star': star,
                 'score': score,
-                'auction_strength': auction_strength,
-                'auction_gap_pct': auction_gap_pct,
-                'auction_breakout_pct': auction_breakout_pct,
             })
         except Exception:
             continue
@@ -878,7 +823,6 @@ def _render_near_breakout_rows(rows: list) -> str:
             '\n                <span data-label="成交额" class="col-amount-cell">' + amount_cell + '</span>'
             '\n                <span data-label="当日涨幅" class="col-pct ' + pct_class + '">' + '{:+.2f}%'.format(record.get('pct', 0)) + '</span>'
             '\n                <span data-label="信号强度" class="col-rec-cell">' + _star_html(record.get('rec_star', 0)) + '</span>'
-            '\n                <span data-label="竞价强度" class="col-auction-cell">' + _same_day_auction_html(record) + '</span>'
             '\n                <span data-label="买入价" class="col-price"></span>'
             '\n                <span data-label="持仓动作" class="col-action"></span>'
             '\n                <span data-label="浮动盈亏" class="col-pnl"></span>'
@@ -1057,13 +1001,6 @@ def generate_index_page(output_dir):
                     'stop_level': stock.get('buy_price', stock['price']) * 0.9,
                     'is_stopped': False, 'amount': stock.get('amount'),
                     'rec_star': rec_star,
-                    'auction_strength': stock.get('auction_strength'),
-                    'auction_gap_pct': stock.get('auction_gap_pct'),
-                    'auction_breakout_pct': stock.get('auction_breakout_pct'),
-                    'next_auction_date': stock.get('next_auction_date'),
-                    'next_auction_strength': stock.get('next_auction_strength'),
-                    'next_auction_gap_pct': stock.get('next_auction_gap_pct'),
-                    'next_auction_breakout_pct': stock.get('next_auction_breakout_pct'),
                     'sector_resonance': stock.get('sector_resonance'),
                     'sector_resonance_type': stock.get('sector_resonance_type'),
                     'sector_resonance_name': stock.get('sector_resonance_name'),
@@ -1122,13 +1059,6 @@ def generate_index_page(output_dir):
                 'is_stopped': is_stopped_row,
                 'amount': stock.get('amount'),
                 'rec_star': rec_star,
-                'auction_strength': stock.get('auction_strength'),
-                'auction_gap_pct': stock.get('auction_gap_pct'),
-                'auction_breakout_pct': stock.get('auction_breakout_pct'),
-                'next_auction_date': stock.get('next_auction_date'),
-                'next_auction_strength': stock.get('next_auction_strength'),
-                'next_auction_gap_pct': stock.get('next_auction_gap_pct'),
-                'next_auction_breakout_pct': stock.get('next_auction_breakout_pct'),
                 'sector_resonance': stock.get('sector_resonance'),
                 'sector_resonance_type': stock.get('sector_resonance_type'),
                 'sector_resonance_name': stock.get('sector_resonance_name'),
@@ -1225,7 +1155,6 @@ def generate_index_page(output_dir):
                 '\n                <span data-label="成交额" class="col-amount-cell">' + amount_cell + '</span>'
                 '\n                <span data-label="当日涨幅" class="col-pct ' + pct_class + '">' + "{:+.2f}%".format(record['pct']) + '</span>'
                 '\n                <span data-label="信号强度" class="col-rec-cell">' + _star_html(record.get('rec_star', 0)) + '</span>'
-                '\n                <span data-label="竞价强度" class="col-auction-cell">' + _auction_html(record) + '</span>'
                 '\n                <span data-label="买入价" class="col-price">¥' + "{:.2f}".format(record['buy_price'])
                 + ' <span class="buy-tag ' + buy_tag_class + '">' + buy_tag + '</span></span>'
                 '\n                <span data-label="持仓动作" class="col-action ' + record['action_class'] + '">' + record['action_text'] + '</span>'
@@ -1244,7 +1173,6 @@ def generate_index_page(output_dir):
                 '\n                <span data-label="成交额" class="col-amount-cell">' + amount_cell + '</span>'
                 '\n                <span data-label="当日涨幅" class="col-pct ' + pct_class + '">' + "{:+.2f}%".format(record['pct']) + '</span>'
                 '\n                <span data-label="信号强度" class="col-rec-cell">' + _star_html(record.get('rec_star', 0)) + '</span>'
-                '\n                <span data-label="竞价强度" class="col-auction-cell">' + _auction_html(record) + '</span>'
                 '\n                <span data-label="买入价" class="col-price">¥' + "{:.2f}".format(record['buy_price'])
                 + ' <span class="buy-tag ' + buy_tag_class + '">' + buy_tag + '</span></span>'
                 '\n                <span data-label="持仓动作" class="col-action ' + record['action_class'] + '">' + record['action_text'] + '</span>'
@@ -1363,13 +1291,6 @@ def generate_index_page(output_dir):
         .amount-high {{ color: var(--green); }}
         .col-rec {{ flex: 0.8; text-align: center; font-size: 13px; letter-spacing: 1px; }}
         .col-rec-cell {{ flex: 0.8; text-align: center; font-size: 13px; letter-spacing: 1px; }}
-        .col-auction {{ flex: 1.05; text-align: center; font-size: 12px; }}
-        .col-auction-cell {{ flex: 1.05; text-align: center; font-size: 11px; line-height: 1.25; }}
-        .auction-value {{ display: block; font-size: 13px; font-weight: 700; line-height: 1.2; }}
-        .auction-sub {{ display: block; margin-top: 1px; font-size: 10px; line-height: 1.2; color: var(--text-muted); white-space: nowrap; }}
-        .auction-strong {{ color: var(--green); }}
-        .auction-mid {{ color: var(--yellow); }}
-        .auction-weak {{ color: var(--text-muted); }}
         .rec-5 {{ color: #ffd966; text-shadow: 0 0 6px rgba(255, 215, 102, 0.4); }}
         .rec-4 {{ color: var(--green); }}
         .rec-3 {{ color: var(--blue); }}
@@ -1535,12 +1456,12 @@ def generate_index_page(output_dir):
             .col-code {{ display: inline; margin-left: 6px; font-size: 11px; color: var(--text-muted); font-weight: 400; }}
 
             /* 其它字段：用 data-label 前缀 + 网格化 */
-            .col-amount-cell, .col-pct, .col-rec-cell, .col-auction-cell, .col-price, .col-action, .col-pnl, .col-stop {{
+            .col-amount-cell, .col-pct, .col-rec-cell, .col-price, .col-action, .col-pnl, .col-stop {{
                 flex: 1 1 30%;
                 font-size: 11px;
                 text-align: left !important;
             }}
-            .col-amount-cell::before, .col-pct::before, .col-rec-cell::before, .col-auction-cell::before, .col-price::before, .col-action::before, .col-pnl::before, .col-stop::before {{
+            .col-amount-cell::before, .col-pct::before, .col-rec-cell::before::before, .col-price::before, .col-action::before, .col-pnl::before, .col-stop::before {{
                 content: attr(data-label);
                 display: block;
                 font-size: 10px;
@@ -1549,10 +1470,8 @@ def generate_index_page(output_dir):
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
             }}
-            .col-rec-cell::before, .col-auction-cell::before {{ text-align: left; }}
-            .col-rec-cell, .col-auction-cell {{ text-align: left !important; letter-spacing: 0; }}
-            .auction-sub {{ white-space: normal; font-size: 10px; }}
-            .col-amount-cell {{ display: block; }}
+            .col-rec-cell::before::before {{ text-align: left; }}
+            .col-rec-cell,            .col-amount-cell {{ display: block; }}
 
             .profit, .loss {{ font-weight: 500; }}
             .buy-tag {{ font-size: 9px; padding: 0 4px; margin-left: 2px; }}
@@ -1576,7 +1495,6 @@ def generate_index_page(output_dir):
                 <span class="col-amount">成交额</span>
                 <span class="col-pct">当日涨幅</span>
                 <span class="col-rec">信号强度</span>
-                <span class="col-auction">竞价强度</span>
                 <span class="col-price">买入价</span>
                 <span class="col-action">持仓动作</span>
                 <span class="col-pnl">浮动盈亏 <button class="sort-btn" id="sort-pnl" onclick="toggleSort(event)">↕</button></span>
@@ -1606,7 +1524,6 @@ def generate_index_page(output_dir):
                 <span class="col-amount">成交额</span>
                 <span class="col-pct">当日涨幅</span>
                 <span class="col-rec">信号强度</span>
-                <span class="col-auction">竞价强度</span>
                 <span class="col-price">买入价</span>
                 <span class="col-action">持仓动作</span>
                 <span class="col-pnl">浮动盈亏</span>

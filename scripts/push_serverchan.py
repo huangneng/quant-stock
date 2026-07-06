@@ -34,13 +34,9 @@ SIGNAL_LABEL = {
 }
 
 
-def render_markdown(date_iso: str, df: pd.DataFrame, intraday: bool = False) -> str:
-    intraday_note = ''
-    if intraday:
-        intraday_note = '> ⚠️ 盘中 14:30 预警扫描，最终请以 16:15 盘后扫描为准。\n\n'
+def render_markdown(date_iso: str, df: pd.DataFrame) -> str:
     if df is None or df.empty:
         return (
-            intraday_note +
             f"### 📊 {date_iso} 选股结果\n\n"
             f"> 今日 0 只候选\n\n"
             f"预筛或信号判定未触发。"
@@ -57,7 +53,6 @@ def render_markdown(date_iso: str, df: pd.DataFrame, intraday: bool = False) -> 
     n4 = int((df['star'] == 4).sum())
 
     lines = [
-        intraday_note +
         f"### 📊 {date_iso} 今日选股 {n_total} 只（5★ {n5} / 4★ {n4}）\n",
         "| 星级 | 名称 | 代码 | 现价 | 涨幅 | 类型 | 成交额 | 评分 |",
         "| --- | --- | --- | --- | --- | --- | --- | --- |",
@@ -91,10 +86,9 @@ def send_serverchan(title: str, content: str):
     print(f'[push_serverchan] 推送成功（title={title}）')
 
 
-def push_today(intraday: bool = False):
+def push_today():
     date_iso = os.environ.get('PUSH_DATE', '').strip() or date.today().strftime('%Y-%m-%d')
-    prefix = 'intraday_selections_' if intraday else 'daily_selections_'
-    csv_path = os.path.join(OUTPUT_DIR, f'{prefix}{date_iso}.csv')
+    csv_path = os.path.join(OUTPUT_DIR, f'daily_selections_{date_iso}.csv')
 
     if not os.path.exists(csv_path):
         print(f'[push_serverchan] 跳过：CSV 不存在 {csv_path}', file=sys.stderr)
@@ -108,17 +102,13 @@ def push_today(intraday: bool = False):
 
     n = 0 if df is None or df.empty else len(df)
     n5 = 0 if df is None or df.empty else int((df['star'] == 5).sum())
-    tag = '[盘中] ' if intraday else ''
-    title = f'{tag}【{date_iso}】今日选股 {n} 只 / {n5} 只 5★' if n else f'{tag}【{date_iso}】今日 0 只候选'
-    content = render_markdown(date_iso, df, intraday=intraday)
+    title = f'【{date_iso}】今日选股 {n} 只 / {n5} 只 5★' if n else f'【{date_iso}】今日 0 只候选'
+    content = render_markdown(date_iso, df)
     send_serverchan(title, content)
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--intraday', action='store_true')
-    args = parser.parse_args()
-    push_today(intraday=args.intraday)
+    push_today()
 
 
 if __name__ == '__main__':

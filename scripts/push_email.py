@@ -76,13 +76,8 @@ def _render_table_html(df: pd.DataFrame) -> str:
     )
 
 
-def render_html(date_iso: str, df: pd.DataFrame, intraday: bool = False) -> str:
+def render_html(date_iso: str, df: pd.DataFrame) -> str:
     """渲染 GitHub Light 风格邮件正文。"""
-    intraday_note = ''
-    if intraday:
-        intraday_note = (
-            '<div class="warn">⚠️ 盘中 14:30 预警扫描，最终请以 16:15 盘后扫描为准。</div>'
-        )
     if df is None or df.empty:
         body = (
             '<div class="empty">'
@@ -122,14 +117,12 @@ def render_html(date_iso: str, df: pd.DataFrame, intraday: bool = False) -> str:
         td.down {{ color:#1a7f37; font-weight:600; }}
         td.star-cell {{ white-space:nowrap; }}
         .star {{ color:#e3b341; letter-spacing:1px; }}
-        .star-na {{ color:#8c959f; }}
-        tbody tr:hover {{ background:#f6f8fa; }}
-        .empty {{ padding:24px; background:#f6f8fa; border-radius:6px; text-align:center; color:#57606a; }}
-        .more {{ display:inline-block; margin-top:20px; padding:10px 18px; background:#1f6feb; color:#fff !important; text-decoration:none; border-radius:6px; font-weight:600; }}
-        .footer {{ color:#8c959f; font-size:12px; margin-top:20px; text-align:right; }}
-        .warn {{ background:#fff8c5; color:#7d4e00; padding:10px 14px; border-radius:6px; margin-bottom:14px; border-left:3px solid #d4a72c; }}
+        .star-na { color:#8c959f; }
+        tbody tr:hover { background:#f6f8fa; }
+        .empty { padding:24px; background:#f6f8fa; border-radius:6px; text-align:center; color:#57606a; }
+        .more { display:inline-block; margin-top:20px; padding:10px 18px; background:#1f6feb; color:#fff !important; text-decoration:none; border-radius:6px; font-weight:600; }
+        .footer { color:#8c959f; font-size:12px; margin-top:20px; text-align:right; }
     </style></head><body>
-        {intraday_note}
         {body}
         <p><a class="more" href="{REPORT_URL}" target="_blank">查看全部持仓与历史走势 →</a></p>
         <p class="footer">扫描时间: {date_iso} · 本地 launchd 自动推送</p>
@@ -162,10 +155,9 @@ def send_email(subject: str, html: str):
     print(f'[push_email] 已发送邮件 → {to}（subject={subject}）')
 
 
-def push_today(intraday: bool = False):
+def push_today():
     date_iso = os.environ.get('PUSH_DATE', '').strip() or date.today().strftime('%Y-%m-%d')
-    prefix = 'intraday_selections_' if intraday else 'daily_selections_'
-    csv_path = os.path.join(OUTPUT_DIR, f'{prefix}{date_iso}.csv')
+    csv_path = os.path.join(OUTPUT_DIR, f'daily_selections_{date_iso}.csv')
 
     if not os.path.exists(csv_path):
         print(f'[push_email] 跳过：CSV 不存在 {csv_path}', file=sys.stderr)
@@ -179,17 +171,13 @@ def push_today(intraday: bool = False):
 
     n = 0 if df is None or df.empty else len(df)
     n5 = 0 if df is None or df.empty else int((df['star'] == 5).sum())
-    tag = '[盘中] ' if intraday else ''
-    subject = f'{tag}【{date_iso}】今日选股 {n} 只 / {n5} 只 5★' if n else f'{tag}【{date_iso}】今日 0 只候选'
-    html = render_html(date_iso, df, intraday=intraday)
+    subject = f'【{date_iso}】今日选股 {n} 只 / {n5} 只 5★' if n else f'【{date_iso}】今日 0 只候选'
+    html = render_html(date_iso, df)
     send_email(subject, html)
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--intraday', action='store_true', help='盘中预警推送（独立 csv，subject 加 [盘中] 前缀）')
-    args = parser.parse_args()
-    push_today(intraday=args.intraday)
+    push_today()
 
 
 if __name__ == '__main__':
