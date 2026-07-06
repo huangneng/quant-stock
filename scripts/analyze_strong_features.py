@@ -77,8 +77,6 @@ def main():
                 'code': code, 'entry_date': entry, 'hist': hist,
                 'signal_type': s.get('signal_type'),
                 'is_limit_up': s.get('is_limit_up', False),
-                'auction_amount': s.get('auction_amount'),
-                'auction_volume_ratio': s.get('auction_volume_ratio'),
             }
             feat = extract_features(sample)
             if feat is None:
@@ -94,10 +92,9 @@ def main():
             # 候选新因子（原始特征）
             for fk in ('amount_ratio_20d', 'volume_ratio_20d', 'limit_up_count_60d',
                        'days_since_last_limit_up', 'one_word_lu_ratio', 'body_pct',
-                       'upper_shadow_pct', 'gap_up_pct', 'auction_breakout_pct',
+                       'upper_shadow_pct', 'gap_up_pct',
                        'ma20_deviation', 'consolidation_days', 'ret_60d_pre',
-                       'turnover_today', 'atr14_pct', 'amount_today_yi',
-                       'auction_amount_vs_20d'):
+                       'turnover_today', 'atr14_pct', 'amount_today_yi'):
                 row['f_' + fk] = feat.get(fk, np.nan)
             rows.append(row)
 

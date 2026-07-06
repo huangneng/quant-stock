@@ -75,35 +75,8 @@ def extract_features(sample: dict) -> dict | None:
     if prev is not None:
         prev_close = float(prev['close'])
         feat['gap_up_pct'] = _safe_div(o - prev_close, prev_close)
-        feat['auction_gap_pct'] = feat['gap_up_pct']
     else:
         feat['gap_up_pct'] = np.nan
-        feat['auction_gap_pct'] = np.nan
-
-    try:
-        pre100_high = float(pre.tail(100)['high'].max())
-        all_time_high = float(pre['high'].max())
-        breakout_ref = max(pre100_high, all_time_high)
-        feat['auction_breakout_pct'] = _safe_div(o - breakout_ref, breakout_ref)
-    except Exception:
-        feat['auction_breakout_pct'] = np.nan
-
-    # 真实 9:25 集合竞价成交额：由采集脚本通过 sample['auction_amount'] 注入。
-    # 未注入时保持 np.nan 兜底，向后兼容。
-    auction_amount = sample.get('auction_amount')
-    if auction_amount is not None and auction_amount == auction_amount:
-        feat['auction_amount'] = float(auction_amount)
-        try:
-            avg20 = float(pre.tail(20)['amount'].mean())
-            feat['auction_amount_vs_20d'] = _safe_div(float(auction_amount), avg20)
-        except Exception:
-            feat['auction_amount_vs_20d'] = np.nan
-        vr = sample.get('auction_volume_ratio')
-        feat['auction_amount_ratio'] = float(vr) if (vr is not None and vr == vr) else np.nan
-    else:
-        feat['auction_amount'] = np.nan
-        feat['auction_amount_ratio'] = np.nan
-        feat['auction_amount_vs_20d'] = np.nan
 
     # ATR(14) / 价格
     pre14 = pre.tail(14).copy()

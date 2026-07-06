@@ -50,17 +50,6 @@ def get_new_high_stocks(symbols=('历史新高', '一年新高')) -> set:
     return get_router().get_new_high_stocks(symbols=symbols)
 
 
-def get_auction_amount(codes=None) -> dict:
-    """竞价/实时成交额快照 {bs_code: {'amount':..., 'volume_ratio':...}}。异常返回空字典。"""
-    from data_hub.router import get_router
-    return get_router().get_auction_amount(codes=codes)
-
-
-def get_auction_amount_hist(code, date):
-    """指定日期 9:30 首根分钟成交额（近似竞价额，仅近5交易日）。异常返回 None。"""
-    from data_hub.router import get_router
-    return get_router().get_auction_amount_hist(code, date)
-
 
 def get_sector_boards(board_type: str, force_refresh: bool = False) -> pd.DataFrame:
     """获取行业/概念板块列表，列：[type, code, name]。"""

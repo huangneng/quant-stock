@@ -100,7 +100,6 @@ MANUAL_WEIGHTS = {
     'ma_dev_health':  0.10,
     'pre3_setup':     0.10,
     'pre3_vol_slope': 0.07,
-    'auction':        0.03,
 }
 
 FEATURES_FILE = OUTPUT_DIR / 'features.parquet'

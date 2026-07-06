@@ -54,7 +54,6 @@ DEFAULT_WEIGHTS = {
     'ma_dev_health': 0.088,  # 0.10 * 0.88
     'pre3_setup':    0.088,  # 0.10 * 0.88
     'pre3_vol_slope':0.088,  # 0.10 * 0.88
-    'auction':       0.12,   # 新增竞价维度
 }
 DEFAULT_THRESHOLDS = [0.30, 0.45, 0.60, 0.80]  # → 1/2/3/4/5★ 切分点
 
@@ -96,101 +95,6 @@ WEIGHTS, _W_SOURCE = _load_weights()
 STAR_THRESHOLDS, _T_SOURCE = _load_thresholds()
 print(f'[recommender] weights={_W_SOURCE} thresholds={_T_SOURCE}')
 
-
-def _score_auction_strength(s: float) -> float:
-    """竞价强度评分。甜区 [0.3, 0.7]，过低无量，过高散户哄抢均扣分。"""
-    if s is None or s != s:
-        return 0.5
-    s = float(s)
-    if s <= 0.3:
-        return 0.5 + s / 0.3 * 0.3        # 0→0.50, 0.3→0.80
-    if s <= 0.7:
-        return 1.0 - abs(s - 0.5) / 0.2 * 0.2  # 0.5→1.0, 0.3/0.7→0.80
-    return max(0.2, 1.0 - (s - 0.7) / 0.3 * 0.6)  # 0.7→0.80, 1.0→0.20
-
-
-def _score_auction_gap(gap: float, is_limit: bool = False) -> float:
-    """竞价跳空幅度评分。
-    涨停信号：低/平开是正面信号（说明没过度追高），高开扣分。
-    非涨停信号：高开是跳空动能，保持原曲线。
-    """
-    if gap is None or gap != gap:
-        return 0.5
-    gap = float(gap)
-    if is_limit:
-        if gap < -0.005:
-            return 0.75   # 低开：次日开盘未追高，趋势更稳
-        if gap <= 0.005:
-            return 0.85   # 平开：最优
-        if gap <= 0.03:
-            return 0.60
-        if gap <= 0.07:
-            return 0.35
-        return 0.15       # 过度高开：透支动能
-    else:
-        # 非涨停（breakthrough / gap_up）：高开是正面信号
-        if gap < 0:
-            return 0.3
-        if gap < 0.02:
-            return 0.5
-        if gap < 0.05:
-            return 0.8
-        if gap < 0.08:
-            return 1.0
-        if gap < 0.12:
-            return 0.7
-        return 0.4
-
-
-def _score_auction_breakout(x: float) -> float:
-    """开盘价相对前高距离评分。x>=0 表示已越过前高。"""
-    if x is None or x != x:
-        return 0.5
-    x = float(x)
-    if x >= 0:
-        return 1.0
-    dist = -x
-    if dist <= 0.02:
-        return 0.8
-    if dist <= 0.05:
-        return 0.5
-    return 0.2
-
-
-def _score_auction(features: dict | pd.Series) -> float:
-    gap = _get(features, 'auction_gap_pct')
-    breakout = _get(features, 'auction_breakout_pct')
-    sig = _get(features, 'signal_type', '')
-    is_limit = str(sig) in ('limit_up', 'one_word')
-
-    # 竞价强度优先用真实竞价额/近20日均额比值映射；缺失时回退到已有 auction_strength
-    vs20 = _get(features, 'auction_amount_vs_20d')
-    if vs20 is not None and vs20 == vs20:
-        # 竞价额占比映射到 [0,1]：5% 偏弱→0.3，15% 甜区→1.0，>30% 过热回落
-        strength = _auction_vs20_to_strength(float(vs20))
-    else:
-        strength = _get(features, 'auction_strength')
-
-    gap_score = _score_auction_gap(gap, is_limit=is_limit)
-    breakout_score = _score_auction_breakout(breakout)
-    strength_score = _score_auction_strength(strength)
-    # gap 方向 40%，突破位置 35%，量能强度 25%
-    return 0.40 * gap_score + 0.35 * breakout_score + 0.25 * strength_score
-
-
-def _auction_vs20_to_strength(vs20: float) -> float:
-    """竞价额 / 近20日均成交额 → 竞价强度 [0,1]。
-    竞价额通常占全天的 3%~10%；占比越高说明早盘资金越积极，但过高（>30%）可能是异动。
-    """
-    if vs20 != vs20:
-        return 0.5
-    if vs20 <= 0:
-        return 0.0
-    if vs20 <= 0.15:
-        return min(1.0, vs20 / 0.15)          # 0→0, 0.15→1.0
-    if vs20 <= 0.30:
-        return 1.0                             # 甜区
-    return max(0.4, 1.0 - (vs20 - 0.30) / 0.30 * 0.6)  # 过热回落
 
 
 def score(features: dict | pd.Series) -> dict:
@@ -235,8 +139,6 @@ def score(features: dict | pd.Series) -> dict:
     sl = _get(f, 'pre3_volume_slope')
     d_slope = _dim_or_default(_clamp((float(sl) + 0.3) / 0.6, 0, 1) if sl == sl else np.nan)
 
-    d_auction = _dim_or_default(_score_auction(f))
-
     # 信号类型奖励（叠加在加权总分之外）
     sig_type = str(_get(f, 'signal_type', ''))
     if sig_type in ('limit_up', 'one_word'):
@@ -254,7 +156,6 @@ def score(features: dict | pd.Series) -> dict:
         'ma_dev_health': d_ma,
         'pre3_setup': d_setup,
         'pre3_vol_slope': d_slope,
-        'auction': d_auction,
         'signal_bonus': signal_bonus,
     }
     base_total = sum(dims[k] * WEIGHTS[k] for k in WEIGHTS)

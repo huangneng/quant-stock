@@ -449,8 +449,6 @@ def select(today: str, min_amount: float = 3e9, throttle: float = 0.02):
             'amount_yi': round(sig['amount'] / 1e8, 2),
             'score': round(sc['score'], 4),
             'star': sc['star'],
-            'auction_gap_pct': round(float(feat.get('auction_gap_pct')), 4) if pd.notna(feat.get('auction_gap_pct')) else None,
-            'auction_breakout_pct': round(float(feat.get('auction_breakout_pct')), 4) if pd.notna(feat.get('auction_breakout_pct')) else None,
             **{k: round(v, 4) for k, v in sc['dims'].items()},
         })
 
@@ -525,9 +523,6 @@ def update_selections_json(df: pd.DataFrame, today_iso: str):
                 'amount': float(s['amount_yi']) * 1e8,
                 'star': int(s.get('star', 0)),
                 'score': float(s.get('score', 0)),
-                'auction_strength': float(s.get('auction_strength')) if pd.notna(s.get('auction_strength')) else None,
-                'auction_gap_pct': float(s.get('auction_gap_pct')) if pd.notna(s.get('auction_gap_pct')) else None,
-                'auction_breakout_pct': float(s.get('auction_breakout_pct')) if pd.notna(s.get('auction_breakout_pct')) else None,
                 'conditions': {},
             })
 

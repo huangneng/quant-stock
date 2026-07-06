@@ -14,10 +14,8 @@ from data_hub.sources.akshare import AkshareSource
 from data_hub.sources.eastmoney_sector import EastmoneySectorSource
 from data_hub.sources.tonghuashun_sector import TonghuashunSectorSource
 from data_hub.sources.ths_newhigh import NewHighSource
-from data_hub.sources.auction_amount import AuctionSource
 from data_hub.store.kline_db import KlineDB
 
-# 盘中预筛快照缓存（10 分钟分桶；与日期 + bucket 关联）
 _SNAPSHOT_CACHE: dict = {}
 
 # 统一日期格式：所有入参先归一化为 YYYY-MM-DD
@@ -41,7 +39,6 @@ class Router:
         self.em_sector = EastmoneySectorSource()
         self.ths_sector = TonghuashunSectorSource()
         self.newhigh = NewHighSource()
-        self.auction = AuctionSource()
         self.db = KlineDB()
         self._bs_logged_in = False
         self._mootdx_logged_in = False
@@ -212,19 +209,6 @@ class Router:
             return self.newhigh.get_new_high(symbols=symbols)
         except Exception:
             return set()
-
-    # ---------- auction amount ----------
-    def get_auction_amount(self, codes=None) -> dict:
-        try:
-            return self.auction.get_auction_amount(codes=codes)
-        except Exception:
-            return {}
-
-    def get_auction_amount_hist(self, code, date):
-        try:
-            return self.auction.get_auction_amount_hist(code, date)
-        except Exception:
-            return None
 
     # ---------- sync ----------
     def sync_kline_db(self, start: str, end: str, codes: Optional[List[str]] = None,
