@@ -1,6 +1,6 @@
 # Quant Stock：A 股动量突破选股与跟踪系统
 
-一个面向 A 股市场的自动化量化选股项目，覆盖 **实时数据接入 → 每日/盘中选股 → 推荐评分 → 持仓跟踪 → HTML 报告 → 邮件/微信推送 → 回测研究** 的完整闭环。
+一个面向 A 股市场的自动化量化选股项目，覆盖 **实时数据接入 → 每日选股 → 推荐评分 → 持仓跟踪 → HTML 报告 → 邮件/微信推送 → 回测研究** 的完整闭环。
 
 项目目标不是预测短期涨跌，而是把「高成交额 + 强动量 + 新高/突破」这类人工盯盘逻辑工程化，形成可复现、可追踪、可持续迭代的选股研究系统。
 
@@ -46,7 +46,7 @@ stock_research 多维回测与特征归因
 ```text
 .
 ├── data_hub/                 # 统一数据层：KlineDB / Baostock / mootdx / Akshare / Sina / Tencent
-├── daily_select.py           # 每日选股与盘中预警入口
+├── daily_select.py           # 每日盘后选股入口
 ├── quant_backtest/           # 回测框架、跟踪页生成、策略验证
 ├── scripts/                  # 交易日检查、邮件推送、Server酱推送
 ├── stock_data/               # selections.json、交易日历、本地缓存和 KlineDB
@@ -111,18 +111,7 @@ python daily_select.py
 - `stock_data/selections.json`
 - `tracker_report/index.html`
 
-### 4. 运行盘中预警
-
-```bash
-python daily_select.py --intraday
-```
-
-生成：
-
-- `stock_research/output/intraday_selections_YYYY-MM-DD.csv`
-- `stock_research/output/intraday_selections_latest.csv`
-
-### 5. 同步本地 KlineDB
+### 4. 同步本地 KlineDB
 
 ```bash
 python -m data_hub sync_today
@@ -135,9 +124,7 @@ python -m data_hub sync_today
 | 命令 | 说明 |
 |---|---|
 | `python daily_select.py` | 盘后选股并刷新报告 |
-| `python daily_select.py --intraday` | 盘中预警扫描 |
 | `python scripts/push_email.py` | 推送当日盘后选股邮件 |
-| `python scripts/push_email.py --intraday` | 推送盘中预警邮件 |
 | `python scripts/push_serverchan.py` | Server酱微信推送 |
 | `python -m data_hub sync_today` | 同步最近交易日 K 线到本地库 |
 | `python -m stock_research.pipeline` | 跑特征研究与多维回测主管线 |
@@ -149,7 +136,6 @@ python -m data_hub sync_today
 
 ```bash
 ./run_daily.sh           # 盘后任务：16:15 后执行，带防重复 stamp
-./run_daily.sh intraday  # 盘中任务：14:00~15:00 时间窗执行
 ```
 
 盘后任务流程：
@@ -166,7 +152,6 @@ python -m data_hub sync_today
 | 文件 | 说明 |
 |---|---|
 | `stock_research/output/daily_selections_YYYY-MM-DD.csv` | 每日盘后选股结果 |
-| `stock_research/output/intraday_selections_YYYY-MM-DD.csv` | 盘中预警结果 |
 | `stock_data/selections.json` | 历史入选记录，供跟踪页读取 |
 | `tracker_report/index.html` | 静态跟踪报告，可部署到 GitHub Pages |
 | `stock_research/output/multi_backtest_report.html` | 多维回测研究报告 |
@@ -265,7 +250,6 @@ status = hub.check_completeness(['sh.600519'], '2026-06-10')
 
 - A 股实时行情、交易日历和历史 K 线受数据源稳定性影响，网络异常时可能降级或跳过部分数据。
 - 推荐星级只是候选优先级，不代表收益保证。
-- 盘中结果仅用于预警，最终以盘后数据为准。
 - 请勿将真实 SMTP 授权码、Server酱 Key 等敏感信息提交到仓库。
 
 ## 免责声明
