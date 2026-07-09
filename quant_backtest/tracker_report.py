@@ -261,7 +261,9 @@ def generate_detail_page(code, name, first_date, output_dir):
     start_dt = first_dt - pd.Timedelta(days=150)
     start_date = start_dt.strftime('%Y-%m-%d')
     
-    df = hub.get_kline(code, start_date, today, require_today=True)
+    from datetime import time as dt_time
+    _detail_post_close = pd.Timestamp.now().time() >= dt_time(15, 0)
+    df = hub.get_kline(code, start_date, today, require_today=not _detail_post_close)
     if df is None or df.empty:
         return None
     # 重建为 index='date' 格式，兼容下游逻辑
@@ -853,7 +855,11 @@ def generate_index_page(output_dir):
         for stock in selections[date].get('stocks', []):
             code_dates.setdefault(stock['code'], []).append((date, stock))
 
-    # cycle_map: (code, date) → cycle dict 引用
+    # 盘后（>=15:00）今日数据已由 sync_today 写入 KlineDB，不强制在线拉取今日行
+    from datetime import time as dt_time
+    _post_close = pd.Timestamp.now().time() >= dt_time(15, 0)
+
+
     # cycle dict: {code, entry_date, entry_stock, stop_dt(Timestamp|None), stop_str,
     #              stop_type, exit_price, current_price, pnl_pct, stop_level,
     #              base_action_text, base_action_class, df, hits: [date_str,...], active}
@@ -886,7 +892,7 @@ def generate_index_page(output_dir):
             base_action_text = '-'
             base_action_class = 'act-none'
             try:
-                df = hub.get_kline(code, d_str, today, require_today=True)
+                df = hub.get_kline(code, d_str, today, require_today=not _post_close)
                 if df is not None and not df.empty:
                     df = df.sort_values('date').reset_index(drop=True)
                     df_buy = df[pd.to_datetime(df['date']) >= d_dt].reset_index(drop=True)
