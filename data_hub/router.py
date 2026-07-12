@@ -9,6 +9,7 @@ from data_hub.sources.base import UNIFIED_COLS
 from data_hub.sources.sina import SinaSource
 from data_hub.sources.tencent import TencentSource
 from data_hub.sources.baostock import BaostockSource
+from data_hub.sources.tencent_kline import TencentKlineSource
 from data_hub.sources.mootdx_source import MootdxSource
 from data_hub.sources.akshare import AkshareSource
 from data_hub.sources.eastmoney_sector import EastmoneySectorSource
@@ -34,6 +35,7 @@ class Router:
         self.sina = SinaSource()
         self.tencent = TencentSource()
         self.bs = BaostockSource()
+        self.tx_kline = TencentKlineSource()
         self.mootdx = MootdxSource()
         self.ak = AkshareSource()
         self.em_sector = EastmoneySectorSource()
@@ -140,10 +142,8 @@ class Router:
         return df
 
     def _fetch_kline_online(self, code: str, start: str, end: str) -> Optional[pd.DataFrame]:
-        # baostock -> mootdx -> akshare，任一源成功即返回
-        if not self._bs_logged_in:
-            self._bs_logged_in = self.bs.login()
-        df = self.bs.get_kline(code, start, end)
+        # 腾讯HTTP日K(443端口，最稳) -> mootdx -> akshare -> baostock 兜底
+        df = self.tx_kline.get_kline(code, start, end)
         if df is not None and not df.empty:
             return df
 
@@ -157,6 +157,12 @@ class Router:
         if not self._ak_logged_in:
             self._ak_logged_in = self.ak.login()
         df = self.ak.get_kline(code, start, end)
+        if df is not None and not df.empty:
+            return df
+
+        if not self._bs_logged_in:
+            self._bs_logged_in = self.bs.login()
+        df = self.bs.get_kline(code, start, end)
         return df
 
     # ---------- sector / board ----------
