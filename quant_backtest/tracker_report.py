@@ -1492,6 +1492,7 @@ def generate_index_page(output_dir):
     <div class="container">
         <div class="header">
             <div class="meta">策略跟踪：突破时买入，回撤10%止损或者创新高后高点回撤10%止盈。不构成投资建议，投资有风险，自己理性把握。 | 更新: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
+            <div style="color:#ff4444;font-weight:700;font-size:14px;text-align:left;padding:6px 0;letter-spacing:0.5px;">注意关注数据更新日期，最近突破股票很少，建议不要做，市场风险巨大。</div>
         </div>
         <div class="stock-table">
             <div class="stock-header">
