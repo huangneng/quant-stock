@@ -4,7 +4,7 @@
 
 set -u
 
-PROJECT_DIR="/Users/huangneng/ComateProjects/comate-zulu-demo-1778467204389"
+PROJECT_DIR="/Users/huangneng/ComateProjects/QuackStock"
 PYTHON="/opt/homebrew/bin/python3"
 STAMP="$PROJECT_DIR/stock_data/.last_run_date"
 LOG_DIR="$PROJECT_DIR/logs"
@@ -54,7 +54,10 @@ if [ "$hhmm" -lt 1615 ]; then
     exit 0
 fi
 
-# 4. KlineDB 增量同步
+# Raise fd limit: pandas/report generation previously hit EMFILE (Errno 24)
+ulimit -n 4096 2>/dev/null || true
+
+# 4. KlineDB incremental sync
 log ">>> sync_kline_db --incremental"
 "$PYTHON" -m data_hub sync_today >> "$LOG_FILE" 2>&1 || log "sync_kline_db failed (non-fatal)"
 

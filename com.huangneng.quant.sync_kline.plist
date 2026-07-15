@@ -13,11 +13,11 @@
         <string>sync_today</string>
     </array>
     <key>WorkingDirectory</key>
-    <string>/Users/huangneng/ComateProjects/comate-zulu-demo-1778467204389</string>
+    <string>/Users/huangneng/ComateProjects/QuackStock</string>
     <key>StandardOutPath</key>
-    <string>/Users/huangneng/ComateProjects/comate-zulu-demo-1778467204389/logs/sync_kline.log</string>
+    <string>/Users/huangneng/ComateProjects/QuackStock/logs/sync_kline.log</string>
     <key>StandardErrorPath</key>
-    <string>/Users/huangneng/ComateProjects/comate-zulu-demo-1778467204389/logs/sync_kline.log</string>
+    <string>/Users/huangneng/ComateProjects/QuackStock/logs/sync_kline.log</string>
     <key>StartCalendarInterval</key>
     <array>
         <dict>
