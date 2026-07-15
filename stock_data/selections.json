@@ -1785,6 +1785,59 @@
     "scan_time": "2026-06-01 09:27:49",
     "stocks": []
   },
+  "20260601": {
+    "scan_time": "2026-06-02 07:59:38",
+    "stocks": [
+      {
+        "code": "sh.600011",
+        "name": "华能国际",
+        "price": 9.76,
+        "buy_price": 8.87,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 10.0338218714769,
+        "conditions": {
+          "prev_limit_up": true,
+          "today_high_gain": true,
+          "gap_up_with_gain": true,
+          "new_100d_high": true,
+          "new_all_time_high": true
+        },
+        "amount": 6614876203.63,
+        "next_auction_date": "2026-06-02",
+        "next_auction_strength": 0.28,
+        "next_auction_gap_pct": -0.0379,
+        "next_auction_breakout_pct": -0.0379,
+        "sector_resonance": false,
+        "score": 0.5,
+        "star": 3
+      },
+      {
+        "code": "sh.600863",
+        "name": "华能蒙电",
+        "price": 7.92,
+        "buy_price": 7.31,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 8.493150684931505,
+        "conditions": {
+          "prev_limit_up": true,
+          "today_high_gain": false,
+          "gap_up_with_gain": true,
+          "new_100d_high": true,
+          "new_all_time_high": true
+        },
+        "amount": 5838420893.37,
+        "next_auction_date": "2026-06-02",
+        "next_auction_strength": 0.145,
+        "next_auction_gap_pct": -0.0543,
+        "next_auction_breakout_pct": -0.0672,
+        "sector_resonance": false,
+        "score": 0.5,
+        "star": 3
+      }
+    ]
+  },
   "20260602": {
     "scan_time": "2026-06-02 22:44:10",
     "stocks": [
@@ -1960,59 +2013,6 @@
         "next_auction_strength": 0.89,
         "next_auction_gap_pct": 0.0406,
         "next_auction_breakout_pct": 0.0299,
-        "sector_resonance": false,
-        "score": 0.5,
-        "star": 3
-      }
-    ]
-  },
-  "20260601": {
-    "scan_time": "2026-06-02 07:59:38",
-    "stocks": [
-      {
-        "code": "sh.600011",
-        "name": "华能国际",
-        "price": 9.76,
-        "buy_price": 8.87,
-        "signal_type": "breakthrough",
-        "is_limit_up": false,
-        "pct_change": 10.0338218714769,
-        "conditions": {
-          "prev_limit_up": true,
-          "today_high_gain": true,
-          "gap_up_with_gain": true,
-          "new_100d_high": true,
-          "new_all_time_high": true
-        },
-        "amount": 6614876203.63,
-        "next_auction_date": "2026-06-02",
-        "next_auction_strength": 0.28,
-        "next_auction_gap_pct": -0.0379,
-        "next_auction_breakout_pct": -0.0379,
-        "sector_resonance": false,
-        "score": 0.5,
-        "star": 3
-      },
-      {
-        "code": "sh.600863",
-        "name": "华能蒙电",
-        "price": 7.92,
-        "buy_price": 7.31,
-        "signal_type": "breakthrough",
-        "is_limit_up": false,
-        "pct_change": 8.493150684931505,
-        "conditions": {
-          "prev_limit_up": true,
-          "today_high_gain": false,
-          "gap_up_with_gain": true,
-          "new_100d_high": true,
-          "new_all_time_high": true
-        },
-        "amount": 5838420893.37,
-        "next_auction_date": "2026-06-02",
-        "next_auction_strength": 0.145,
-        "next_auction_gap_pct": -0.0543,
-        "next_auction_breakout_pct": -0.0672,
         "sector_resonance": false,
         "score": 0.5,
         "star": 3
@@ -9263,5 +9263,163 @@
         "next_auction_breakout_pct": -0.0306
       }
     ]
+  },
+  "20260706": {
+    "scan_time": "2026-07-07 08:18:18",
+    "stocks": [
+      {
+        "code": "sz.002747",
+        "name": "埃斯顿",
+        "price": 47.8,
+        "buy_price": 47.8,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 6.77,
+        "amount": 6598000000.0,
+        "star": 3,
+        "score": 0.5116,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002472",
+        "name": "双环传动",
+        "price": 48.14,
+        "buy_price": 48.14,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 3.02,
+        "amount": 3403000000.0,
+        "star": 1,
+        "score": 0.3532,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260707": {
+    "scan_time": "2026-07-07 23:01:41",
+    "stocks": [
+      {
+        "code": "sz.300821",
+        "name": "东岳硅材",
+        "price": 23.3,
+        "buy_price": 23.3,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 5.81,
+        "amount": 4222000000.0,
+        "star": 1,
+        "score": 0.3401,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002396",
+        "name": "星网锐捷",
+        "price": 26.45,
+        "buy_price": 26.45,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 2.76,
+        "amount": 4791000000.0,
+        "star": 1,
+        "score": 0.2411,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260709": {
+    "scan_time": "2026-07-09 16:42:47",
+    "stocks": [
+      {
+        "code": "sz.000977",
+        "name": "浪潮信息",
+        "price": 85.99,
+        "buy_price": 85.99,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 10.0,
+        "amount": 18534000000.0,
+        "star": 4,
+        "score": 0.6205,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000938",
+        "name": "紫光股份",
+        "price": 35.68,
+        "buy_price": 35.68,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 6.13,
+        "amount": 14996000000.0,
+        "star": 3,
+        "score": 0.6011,
+        "conditions": {}
+      },
+      {
+        "code": "sh.688347",
+        "name": "华虹宏力",
+        "price": 400.5,
+        "buy_price": 400.5,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 11.75,
+        "amount": 11575000000.0,
+        "star": 3,
+        "score": 0.5982,
+        "conditions": {}
+      },
+      {
+        "code": "sh.688981",
+        "name": "中芯国际",
+        "price": 173.0,
+        "buy_price": 173.0,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 13.74,
+        "amount": 23646000000.0,
+        "star": 3,
+        "score": 0.5602,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300604",
+        "name": "长川科技",
+        "price": 374.0,
+        "buy_price": 374.0,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 17.9,
+        "amount": 13456000000.0,
+        "star": 3,
+        "score": 0.5471,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260712": {
+    "scan_time": "2026-07-12 12:09:20",
+    "stocks": []
+  },
+  "20260713": {
+    "scan_time": "2026-07-13 16:24:10",
+    "stocks": [
+      {
+        "code": "sz.002317",
+        "name": "众生药业",
+        "price": 31.6,
+        "buy_price": 31.6,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 6.97,
+        "amount": 2647000000.0,
+        "star": 3,
+        "score": 0.5879,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260714": {
+    "scan_time": "2026-07-15 09:12:00",
+    "stocks": []
   }
 }
