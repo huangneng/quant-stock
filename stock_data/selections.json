@@ -9421,5 +9421,23 @@
   "20260714": {
     "scan_time": "2026-07-15 09:12:00",
     "stocks": []
+  },
+  "20260715": {
+    "scan_time": "2026-07-16 09:53:45",
+    "stocks": [
+      {
+        "code": "sz.002821",
+        "name": "凯莱英",
+        "price": 195.75,
+        "buy_price": 195.75,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 10.0,
+        "amount": 4165999999.9999995,
+        "star": 4,
+        "score": 0.6664,
+        "conditions": {}
+      }
+    ]
   }
 }
