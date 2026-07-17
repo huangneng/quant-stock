@@ -9439,5 +9439,23 @@
         "conditions": {}
       }
     ]
+  },
+  "20260716": {
+    "scan_time": "2026-07-17 12:38:10",
+    "stocks": [
+      {
+        "code": "sh.603127",
+        "name": "昭衍新药",
+        "price": 54.41,
+        "buy_price": 54.41,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 7.49,
+        "amount": 2043000000.0,
+        "star": 1,
+        "score": 0.3398,
+        "conditions": {}
+      }
+    ]
   }
 }
