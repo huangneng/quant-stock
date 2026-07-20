@@ -9457,5 +9457,27 @@
         "conditions": {}
       }
     ]
+  },
+  "20260717": {
+    "scan_time": "2026-07-17 21:45:09",
+    "stocks": [
+      {
+        "code": "sh.600664",
+        "name": "哈药股份",
+        "price": 5.33,
+        "buy_price": 5.33,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 7.89,
+        "amount": 4523000000.0,
+        "star": 3,
+        "score": 0.5031,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260720": {
+    "scan_time": "2026-07-20 15:18:30",
+    "stocks": []
   }
 }
