@@ -9477,7 +9477,38 @@
     ]
   },
   "20260720": {
-    "scan_time": "2026-07-20 15:18:30",
+    "scan_time": "2026-07-20 16:56:40",
     "stocks": []
+  },
+  "20260722": {
+    "scan_time": "2026-07-22 06:05:26",
+    "stocks": [
+      {
+        "code": "sh.600664",
+        "name": "哈药股份",
+        "price": 5.84,
+        "buy_price": 5.84,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 9.98,
+        "amount": 3818000000.0,
+        "star": 5,
+        "score": 0.7302,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000938",
+        "name": "紫光股份",
+        "price": 41.46,
+        "buy_price": 41.46,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 10.0,
+        "amount": 19306000000.0,
+        "star": 4,
+        "score": 0.6266,
+        "conditions": {}
+      }
+    ]
   }
 }
