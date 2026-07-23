@@ -9606,5 +9606,119 @@
         "conditions": {}
       }
     ]
+  },
+  "20260708": {
+    "scan_time": "2026-07-23 09:20:07",
+    "stocks": [
+      {
+        "code": "sz.002396",
+        "name": "星网锐捷",
+        "price": 29.1,
+        "buy_price": 29.1,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 10.02,
+        "amount": 1564000000.0,
+        "star": 3,
+        "score": 0.5814,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300821",
+        "name": "东岳硅材",
+        "price": 26.44,
+        "buy_price": 26.44,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 13.48,
+        "amount": 4795000000.0,
+        "star": 2,
+        "score": 0.487,
+        "conditions": {}
+      },
+      {
+        "code": "sh.688347",
+        "name": "华虹宏力",
+        "price": 358.4,
+        "buy_price": 358.4,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 10.62,
+        "amount": 10002000000.0,
+        "star": 1,
+        "score": 0.3482,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260710": {
+    "scan_time": "2026-07-23 09:29:34",
+    "stocks": [
+      {
+        "code": "sz.002185",
+        "name": "华天科技",
+        "price": 25.31,
+        "buy_price": 25.31,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 6.66,
+        "amount": 12695000000.0,
+        "star": 2,
+        "score": 0.4593,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000977",
+        "name": "浪潮信息",
+        "price": 89.52,
+        "buy_price": 89.52,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 4.11,
+        "amount": 25924000000.0,
+        "star": 2,
+        "score": 0.4543,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300759",
+        "name": "康龙化成",
+        "price": 33.94,
+        "buy_price": 33.94,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 9.55,
+        "amount": 3310000000.0,
+        "star": 2,
+        "score": 0.4415,
+        "conditions": {}
+      },
+      {
+        "code": "sh.688432",
+        "name": "有研硅",
+        "price": 56.6,
+        "buy_price": 56.6,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 5.26,
+        "amount": 4589000000.0,
+        "star": 2,
+        "score": 0.3894,
+        "conditions": {}
+      },
+      {
+        "code": "sh.688584",
+        "name": "上海合晶",
+        "price": 43.38,
+        "buy_price": 43.38,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 7.72,
+        "amount": 2517000000.0,
+        "star": 1,
+        "score": 0.2453,
+        "conditions": {}
+      }
+    ]
   }
 }
