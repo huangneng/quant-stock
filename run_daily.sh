@@ -61,9 +61,9 @@ ulimit -n 4096 2>/dev/null || true
 log ">>> sync_kline_db --incremental"
 "$PYTHON" -m data_hub sync_today >> "$LOG_FILE" 2>&1 || log "sync_kline_db failed (non-fatal)"
 
-# 5. Run daily selection
-log ">>> daily_select.py"
-"$PYTHON" -u daily_select.py >> "$LOG_FILE" 2>&1
+# 5. Run daily selection (explicit --date to avoid key mismatch on late/next-day runs)
+log ">>> daily_select.py --date $today"
+"$PYTHON" -u daily_select.py --date "$today" >> "$LOG_FILE" 2>&1
 RET_CODE=$?
 if [ $RET_CODE -ne 0 ]; then
     log "!!! daily_select.py failed rc=$RET_CODE (skip push)"
