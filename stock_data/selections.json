@@ -9562,5 +9562,49 @@
         "conditions": {}
       }
     ]
+  },
+  "20260721": {
+    "scan_time": "2026-07-23 09:13:43",
+    "stocks": [
+      {
+        "code": "sh.600664",
+        "name": "哈药股份",
+        "price": 5.84,
+        "buy_price": 5.84,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 9.98,
+        "amount": 3878000000.0,
+        "star": 5,
+        "score": 0.7733,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000938",
+        "name": "紫光股份",
+        "price": 41.46,
+        "buy_price": 41.46,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 10.0,
+        "amount": 19553000000.0,
+        "star": 4,
+        "score": 0.6256,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603823",
+        "name": "百合花",
+        "price": 81.93,
+        "buy_price": 81.93,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 6.13,
+        "amount": 2564000000.0,
+        "star": 2,
+        "score": 0.4283,
+        "conditions": {}
+      }
+    ]
   }
 }
