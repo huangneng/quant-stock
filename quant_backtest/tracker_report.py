@@ -640,6 +640,11 @@ def _calc_stopout_from_df(df, buy_price):
       close <= stop 即触发出局，exit_price = 当日 close
       peak 使用持仓以来最高价 high，而不是最高收盘价
       止盈 ⇔ exit_price > buy_price，否则 止损
+
+      注意：建仓日（T+0）不参与 peak 追踪。
+        入选日盘中 high 常已远高于 buy_price（buy_price = 收盘价），
+        若立即用 T+0 high 上移 stop，会导致 T+1 稍跌就被打穿，
+        与真正的 trailing stop 意图不符。因此从 T+1 起才追踪 peak。
     返回 (stopout_date, stopout_type, exit_price, peak, stop_level)
     其中 stop_level 为最终的（动态）止损价：
       - 已出局：触发时的 stop
@@ -648,17 +653,18 @@ def _calc_stopout_from_df(df, buy_price):
     if df is None or df.empty:
         return None, None, None, buy_price, buy_price * 0.9
 
-    df = df.sort_values('date')
+    df = df.sort_values('date').reset_index(drop=True)
     peak = buy_price
     stop_level = buy_price * 0.9
     stopout_date = None
     stopout_type = None
     exit_price = None
 
-    for _, row in df.iterrows():
+    for i, row in df.iterrows():
         high = float(row['high'])
         close = float(row['close'])
-        if high > peak:
+        # T+0（建仓日，i==0）不追 peak，只判断当日是否已跌破初始止损
+        if i > 0 and high > peak:
             peak = high
             new_stop = peak * 0.9
             if new_stop > stop_level:
