@@ -9724,5 +9724,23 @@
   "20260723": {
     "scan_time": "2026-07-23 19:25:06",
     "stocks": []
+  },
+  "20260724": {
+    "scan_time": "2026-07-24 21:21:51",
+    "stocks": [
+      {
+        "code": "sz.001258",
+        "name": "立新能源",
+        "price": 13.03,
+        "buy_price": 13.03,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 7.6,
+        "amount": 2713000000.0,
+        "star": 2,
+        "score": 0.4058,
+        "conditions": {}
+      }
+    ]
   }
 }
