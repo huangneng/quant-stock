@@ -9748,7 +9748,38 @@
     "stocks": []
   },
   "20260728": {
-    "scan_time": "2026-07-28 15:12:54",
+    "scan_time": "2026-07-28 16:22:41",
     "stocks": []
+  },
+  "20260729": {
+    "scan_time": "2026-07-30 10:36:45",
+    "stocks": [
+      {
+        "code": "sh.603580",
+        "name": "*ST艾艾",
+        "price": 57.97,
+        "buy_price": 57.97,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 10.0,
+        "amount": 977000000.0,
+        "star": 4,
+        "score": 0.6134,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603221",
+        "name": "爱丽家居",
+        "price": 18.63,
+        "buy_price": 18.63,
+        "signal_type": "one_word",
+        "is_limit_up": true,
+        "pct_change": 9.98,
+        "amount": 21000000.0,
+        "star": 2,
+        "score": 0.4177,
+        "conditions": {}
+      }
+    ]
   }
 }
