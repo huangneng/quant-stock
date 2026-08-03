@@ -9781,5 +9781,53 @@
         "conditions": {}
       }
     ]
+  },
+  "20260730": {
+    "scan_time": "2026-07-30 18:07:40",
+    "stocks": []
+  },
+  "20260731": {
+    "scan_time": "2026-08-03 09:44:00",
+    "stocks": [
+      {
+        "code": "sz.300996",
+        "name": "普联软件",
+        "price": 18.62,
+        "buy_price": 18.62,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 19.97,
+        "amount": 1172000000.0,
+        "star": 5,
+        "score": 0.7186,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300795",
+        "name": "米奥会展",
+        "price": 16.44,
+        "buy_price": 16.44,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 20.0,
+        "amount": 864000000.0,
+        "star": 4,
+        "score": 0.6782,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603221",
+        "name": "爱丽家居",
+        "price": 22.54,
+        "buy_price": 22.54,
+        "signal_type": "one_word",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 451000000.0,
+        "star": 4,
+        "score": 0.612,
+        "conditions": {}
+      }
+    ]
   }
 }
