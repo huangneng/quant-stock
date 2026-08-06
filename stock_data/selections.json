@@ -9835,7 +9835,7 @@
     "stocks": []
   },
   "20260804": {
-    "scan_time": "2026-08-04 16:12:15",
+    "scan_time": "2026-08-04 16:31:14",
     "stocks": [
       {
         "code": "sz.300209",
@@ -9861,6 +9861,37 @@
         "amount": 10391000000.0,
         "star": 2,
         "score": 0.4907,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260805": {
+    "scan_time": "2026-08-05 16:29:36",
+    "stocks": [
+      {
+        "code": "sz.300209",
+        "name": "行云科技",
+        "price": 36.97,
+        "buy_price": 36.97,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 9.9,
+        "amount": 7788000000.0,
+        "star": 2,
+        "score": 0.4957,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603259",
+        "name": "药明康德",
+        "price": 147.5,
+        "buy_price": 147.5,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 4.35,
+        "amount": 19597000000.0,
+        "star": 2,
+        "score": 0.4335,
         "conditions": {}
       }
     ]
