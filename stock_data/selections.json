@@ -9899,5 +9899,267 @@
   "20260806": {
     "scan_time": "2026-08-07 09:06:59",
     "stocks": []
+  },
+  "20260807": {
+    "scan_time": "2026-08-07 21:51:09",
+    "stocks": [
+      {
+        "code": "sh.688235",
+        "name": "百济神州",
+        "price": 299.33,
+        "buy_price": 299.33,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 11.28,
+        "amount": 3489000000.0,
+        "star": 3,
+        "score": 0.5894,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300759",
+        "name": "康龙化成",
+        "price": 45.28,
+        "buy_price": 45.28,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 14.34,
+        "amount": 4494000000.0,
+        "star": 3,
+        "score": 0.5251,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603228",
+        "name": "景旺电子",
+        "price": 94.95,
+        "buy_price": 94.95,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 10.0,
+        "amount": 3213000000.0000005,
+        "star": 2,
+        "score": 0.4588,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260810": {
+    "scan_time": "2026-08-12 07:03:44",
+    "stocks": [
+      {
+        "code": "sh.605179",
+        "name": "一鸣食品",
+        "price": 25.12,
+        "buy_price": 25.12,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 9.98,
+        "amount": 739000000.0,
+        "star": 4,
+        "score": 0.661,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002141",
+        "name": "贤丰控股",
+        "price": 6.72,
+        "buy_price": 6.72,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 9.98,
+        "amount": 1592000000.0,
+        "star": 4,
+        "score": 0.6559,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002458",
+        "name": "益生股份",
+        "price": 9.99,
+        "buy_price": 9.99,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 10.02,
+        "amount": 351000000.0,
+        "star": 4,
+        "score": 0.6236,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600721",
+        "name": "百花医药",
+        "price": 11.59,
+        "buy_price": 11.59,
+        "signal_type": "one_word",
+        "is_limit_up": true,
+        "pct_change": 9.96,
+        "amount": 59000000.0,
+        "star": 2,
+        "score": 0.4394,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300725",
+        "name": "药石科技",
+        "price": 49.61,
+        "buy_price": 49.61,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 4.44,
+        "amount": 2669000000.0,
+        "star": 2,
+        "score": 0.3905,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600664",
+        "name": "哈药股份",
+        "price": 7.52,
+        "buy_price": 7.52,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 9.94,
+        "amount": 986999999.9999999,
+        "star": 2,
+        "score": 0.3859,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603228",
+        "name": "景旺电子",
+        "price": 96.0,
+        "buy_price": 96.0,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 1.11,
+        "amount": 10178000000.0,
+        "star": 2,
+        "score": 0.3852,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300759",
+        "name": "康龙化成",
+        "price": 47.03,
+        "buy_price": 47.03,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 3.86,
+        "amount": 6289000000.0,
+        "star": 1,
+        "score": 0.2962,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260811": {
+    "scan_time": "2026-08-12 07:21:35",
+    "stocks": [
+      {
+        "code": "sz.001258",
+        "name": "立新能源",
+        "price": 15.93,
+        "buy_price": 15.93,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 10.01,
+        "amount": 3592000000.0,
+        "star": 4,
+        "score": 0.6714,
+        "conditions": {}
+      },
+      {
+        "code": "sh.605179",
+        "name": "一鸣食品",
+        "price": 27.63,
+        "buy_price": 27.63,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 9.99,
+        "amount": 1102000000.0,
+        "star": 4,
+        "score": 0.6294,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600162",
+        "name": "香江控股",
+        "price": 4.29,
+        "buy_price": 4.29,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 10.0,
+        "amount": 392000000.0,
+        "star": 3,
+        "score": 0.592,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600664",
+        "name": "哈药股份",
+        "price": 8.27,
+        "buy_price": 8.27,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 9.97,
+        "amount": 5440000000.0,
+        "star": 3,
+        "score": 0.5246,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600721",
+        "name": "百花医药",
+        "price": 12.75,
+        "buy_price": 12.75,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 10.01,
+        "amount": 849000000.0,
+        "star": 2,
+        "score": 0.493,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002458",
+        "name": "益生股份",
+        "price": 10.52,
+        "buy_price": 10.52,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 5.31,
+        "amount": 2023000000.0,
+        "star": 2,
+        "score": 0.4263,
+        "conditions": {}
+      },
+      {
+        "code": "sz.301080",
+        "name": "百普赛斯",
+        "price": 82.3,
+        "buy_price": 82.3,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 5.92,
+        "amount": 2820000000.0,
+        "star": 2,
+        "score": 0.4234,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002141",
+        "name": "贤丰控股",
+        "price": 6.88,
+        "buy_price": 6.88,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 2.38,
+        "amount": 2649000000.0,
+        "star": 1,
+        "score": 0.3332,
+        "conditions": {}
+      }
+    ]
   }
 }
