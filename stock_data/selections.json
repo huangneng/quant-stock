@@ -10161,5 +10161,114 @@
         "conditions": {}
       }
     ]
+  },
+  "20260812": {
+    "scan_time": "2026-08-13 08:52:23",
+    "stocks": [
+      {
+        "code": "sz.002870",
+        "name": "香山股份",
+        "price": 47.49,
+        "buy_price": 47.49,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 10.01,
+        "amount": 462000000.0,
+        "star": 5,
+        "score": 0.7389,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002687",
+        "name": "乔治白",
+        "price": 6.05,
+        "buy_price": 6.05,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 1.17,
+        "amount": 469000000.00000006,
+        "star": 3,
+        "score": 0.5602,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300615",
+        "name": "欣天科技",
+        "price": 19.0,
+        "buy_price": 19.0,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 13.7,
+        "amount": 882000000.0,
+        "star": 3,
+        "score": 0.517,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600664",
+        "name": "哈药股份",
+        "price": 8.81,
+        "buy_price": 8.81,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 6.53,
+        "amount": 5130000000.0,
+        "star": 3,
+        "score": 0.4988,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000802",
+        "name": "北京文化",
+        "price": 5.69,
+        "buy_price": 5.69,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 10.06,
+        "amount": 659000000.0,
+        "star": 2,
+        "score": 0.439,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300862",
+        "name": "蓝盾光电",
+        "price": 32.84,
+        "buy_price": 32.84,
+        "signal_type": "one_word",
+        "is_limit_up": true,
+        "pct_change": 19.99,
+        "amount": 68000000.0,
+        "star": 2,
+        "score": 0.436,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603087",
+        "name": "甘李药业",
+        "price": 77.2,
+        "buy_price": 77.2,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 3.67,
+        "amount": 2971000000.0,
+        "star": 2,
+        "score": 0.3846,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002762",
+        "name": "*ST金比",
+        "price": 10.63,
+        "buy_price": 10.63,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 3.1,
+        "amount": 547000000.0,
+        "star": 1,
+        "score": 0.3444,
+        "conditions": {}
+      }
+    ]
   }
 }
