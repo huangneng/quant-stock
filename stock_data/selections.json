@@ -10314,5 +10314,49 @@
         "conditions": {}
       }
     ]
+  },
+  "20260814": {
+    "scan_time": "2026-08-16 21:00:16",
+    "stocks": [
+      {
+        "code": "sz.300862",
+        "name": "蓝盾光电",
+        "price": 47.29,
+        "buy_price": 47.29,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 19.99,
+        "amount": 3495000000.0000005,
+        "star": 5,
+        "score": 0.7016,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300404",
+        "name": "博济医药",
+        "price": 17.34,
+        "buy_price": 17.34,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 20.0,
+        "amount": 1320000000.0,
+        "star": 5,
+        "score": 0.7006,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300929",
+        "name": "华骐环保",
+        "price": 16.82,
+        "buy_price": 16.82,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 19.97,
+        "amount": 202000000.0,
+        "star": 4,
+        "score": 0.6512,
+        "conditions": {}
+      }
+    ]
   }
 }
