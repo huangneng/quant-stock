@@ -10270,5 +10270,49 @@
         "conditions": {}
       }
     ]
+  },
+  "20260813": {
+    "scan_time": "2026-08-16 20:47:35",
+    "stocks": [
+      {
+        "code": "sh.600721",
+        "name": "百花医药",
+        "price": 14.5,
+        "buy_price": 14.5,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 3.35,
+        "amount": 2572000000.0,
+        "star": 2,
+        "score": 0.4915,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300725",
+        "name": "药石科技",
+        "price": 54.79,
+        "buy_price": 54.79,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 10.64,
+        "amount": 2615000000.0,
+        "star": 2,
+        "score": 0.4161,
+        "conditions": {}
+      },
+      {
+        "code": "sz.301165",
+        "name": "锐捷网络",
+        "price": 143.3,
+        "buy_price": 143.3,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 13.52,
+        "amount": 5402000000.0,
+        "star": 2,
+        "score": 0.4003,
+        "conditions": {}
+      }
+    ]
   }
 }
