@@ -10358,5 +10358,45 @@
         "conditions": {}
       }
     ]
+  },
+  "20260817": {
+    "scan_time": "2026-08-17 19:44:17",
+    "stocks": [
+      {
+        "code": "sz.002437",
+        "name": "誉衡药业",
+        "price": 4.98,
+        "buy_price": 4.98,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 9.93,
+        "amount": 2963000000.0,
+        "star": 5,
+        "score": 0.7629,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260818": {
+    "scan_time": "2026-08-18 16:25:10",
+    "stocks": [
+      {
+        "code": "sz.300684",
+        "name": "中石科技",
+        "price": 97.0,
+        "buy_price": 97.0,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 20.0,
+        "amount": 4805000000.0,
+        "star": 3,
+        "score": 0.5042,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260819": {
+    "scan_time": "2026-08-19 16:49:39",
+    "stocks": []
   }
 }
