@@ -218,17 +218,30 @@ class Router:
 
     # ---------- sync ----------
     def sync_kline_db(self, start: str, end: str, codes: Optional[List[str]] = None,
-                      full: bool = False) -> dict:
+                      full: bool = False, skip_retry_gte: int = 5,
+                      skip_window_days: int = 7) -> dict:
         start = _iso(start)
         end = _iso(end)
         if codes is None:
             codes = self.get_universe()['code'].tolist()
         if not self._bs_logged_in:
             self._bs_logged_in = self.bs.login()
+        # 增量模式下跳过"死码"：连续失败达阈值且近期仍在失败的标的（多为退市/长期停牌）
+        skip_set = set()
+        if not full and skip_retry_gte > 0:
+            fdf = self.db.get_failed(min_retry=skip_retry_gte)
+            cutoff = (pd.Timestamp(end) - pd.Timedelta(days=skip_window_days)).strftime('%Y-%m-%d')
+            skip_set = {r.code for r in fdf.itertuples() if str(r.updated_at)[:10] >= cutoff}
+            if skip_set:
+                print(f"  [sync] 跳过死码 {len(skip_set)} 只（retry_cnt>={skip_retry_gte} 且 {skip_window_days} 日内仍失败）")
         synced = 0
         failed = []
+        skipped_dead = 0
         t0 = time.time()
         for i, code in enumerate(codes):
+            if code in skip_set:
+                skipped_dead += 1
+                continue
             real_start = start
             if not full:
                 last = self.db.get_last_date(code)
@@ -239,15 +252,19 @@ class Router:
             df = self._fetch_kline_online(code, real_start, end)
             if df is None or df.empty:
                 failed.append(code)
+                self.db.mark_failed(code, 'empty_from_all_sources')
                 continue
             df = df.copy()
             df['code'] = code
             self.db.upsert_kline(df)
+            self.db.clear_failed(code)
             synced += 1
             if (i + 1) % 200 == 0:
-                print(f"  [sync] {i+1}/{len(codes)} synced={synced} failed={len(failed)} elapsed={time.time()-t0:.0f}s")
+                print(f"  [sync] {i+1}/{len(codes)} synced={synced} failed={len(failed)} "
+                      f"skipped_dead={skipped_dead} elapsed={time.time()-t0:.0f}s")
         self.db.meta_set('last_sync_date', end)
-        return {'synced': synced, 'failed': len(failed), 'elapsed_s': round(time.time() - t0, 1)}
+        return {'synced': synced, 'failed': len(failed), 'skipped_dead': skipped_dead,
+                'failed_codes': failed[:20], 'elapsed_s': round(time.time() - t0, 1)}
 
 
 _router_singleton: Optional[Router] = None

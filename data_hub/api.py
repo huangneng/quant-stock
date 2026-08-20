@@ -38,10 +38,13 @@ def check_completeness(codes: list, end_date: str, min_rows: int = 100) -> dict:
 
 
 def sync_kline_db(start: str, end: str, codes: Optional[list] = None,
-                  full: bool = False) -> dict:
-    """增量/全量同步 KlineDB。返回 {synced, failed, elapsed_s}。"""
+                  full: bool = False, skip_retry_gte: int = 5,
+                  skip_window_days: int = 7) -> dict:
+    """增量/全量同步 KlineDB。返回 {synced, failed, skipped_dead, failed_codes, elapsed_s}。"""
     from data_hub.router import get_router
-    return get_router().sync_kline_db(start, end, codes=codes, full=full)
+    return get_router().sync_kline_db(start, end, codes=codes, full=full,
+                                      skip_retry_gte=skip_retry_gte,
+                                      skip_window_days=skip_window_days)
 
 
 def get_new_high_stocks(symbols=('历史新高', '一年新高')) -> set:

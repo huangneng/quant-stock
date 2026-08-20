@@ -444,6 +444,7 @@ def select(today: str, min_amount: float = 2.5e9, throttle: float = 0.02):
             'name': name,
             'signal_type': sig['signal_type'],
             'signal_subtypes': sig['signal_subtypes'],
+            'is_limit_up': bool(sig['is_limit_up']),
             'price': round(sig['price'], 2),
             'pct': round(sig['pct'], 2),
             'amount_yi': round(sig['amount'] / 1e8, 2),

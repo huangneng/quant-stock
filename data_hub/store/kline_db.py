@@ -120,6 +120,31 @@ class KlineDB:
         with self._conn() as c:
             return pd.read_sql_query("SELECT code,name FROM universe ORDER BY code", c)
 
+    # -------- failed_codes --------
+    def mark_failed(self, code: str, err: str):
+        ts = pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')
+        with self._lock, self._conn() as c:
+            c.execute(
+                "INSERT INTO failed_codes (code,last_err,retry_cnt,updated_at) "
+                "VALUES (?,?,1,?) "
+                "ON CONFLICT(code) DO UPDATE SET "
+                "last_err=excluded.last_err, retry_cnt=retry_cnt+1, "
+                "updated_at=excluded.updated_at",
+                (code, (err or '')[:200], ts),
+            )
+
+    def clear_failed(self, code: str):
+        with self._lock, self._conn() as c:
+            c.execute("DELETE FROM failed_codes WHERE code=?", (code,))
+
+    def get_failed(self, min_retry: int = 1) -> pd.DataFrame:
+        with self._conn() as c:
+            return pd.read_sql_query(
+                "SELECT code,last_err,retry_cnt,updated_at FROM failed_codes "
+                "WHERE retry_cnt>=? ORDER BY retry_cnt DESC",
+                c, params=(min_retry,),
+            )
+
     # -------- meta --------
     def meta_set(self, key: str, value: str):
         with self._lock, self._conn() as c:

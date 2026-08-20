@@ -64,12 +64,21 @@ def _load_weights():
         return DEFAULT_WEIGHTS, 'default'
     try:
         d = json.loads(p.read_text(encoding='utf-8'))
-        if not isinstance(d, dict) or set(d.keys()) != set(DEFAULT_WEIGHTS.keys()):
+        if not isinstance(d, dict):
             return DEFAULT_WEIGHTS, 'default(invalid_file)'
-        s = sum(d.values())
-        if s <= 0 or any(v < 0 for v in d.values()):
+        missing = set(DEFAULT_WEIGHTS) - set(d)
+        if missing:
+            return DEFAULT_WEIGHTS, f'default(missing:{",".join(sorted(missing))})'
+        vals = {k: float(d[k]) for k in DEFAULT_WEIGHTS}
+        s = sum(vals.values())
+        if s <= 0 or any(v < 0 for v in vals.values()):
             return DEFAULT_WEIGHTS, 'default(non_positive)'
-        return {k: float(d[k]) / s for k in DEFAULT_WEIGHTS}, 'learned'
+        # 归一化到与 DEFAULT_WEIGHTS 相同的尺度（0.88），余量留给 signal_bonus，
+        # 也保证学习阈值（在 0.88 尺度上标定）继续有效
+        scale = sum(DEFAULT_WEIGHTS.values())
+        extra = sorted(set(d) - set(DEFAULT_WEIGHTS))
+        src = 'learned' if not extra else f'learned(ignored:{",".join(extra)})'
+        return {k: v / s * scale for k, v in vals.items()}, src
     except Exception:
         return DEFAULT_WEIGHTS, 'default(parse_error)'
 

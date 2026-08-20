@@ -13,7 +13,11 @@ def sync_today():
     end = today.isoformat()
     print(f"[sync_kline] incremental {start} ~ {end}")
     result = hub.sync_kline_db(start, end, full=False)
-    print(f"  synced={result.get('synced',0)} failed={result.get('failed',0)} elapsed={result.get('elapsed_s',0):.1f}s")
+    print(f"  synced={result.get('synced',0)} failed={result.get('failed',0)} "
+          f"skipped_dead={result.get('skipped_dead',0)} elapsed={result.get('elapsed_s',0):.1f}s")
+    fc = result.get('failed_codes') or []
+    if fc:
+        print(f"  failed_sample={','.join(fc)}")
     return result
 
 

@@ -117,11 +117,11 @@ def render_html(date_iso: str, df: pd.DataFrame) -> str:
         td.down {{ color:#1a7f37; font-weight:600; }}
         td.star-cell {{ white-space:nowrap; }}
         .star {{ color:#e3b341; letter-spacing:1px; }}
-        .star-na { color:#8c959f; }
-        tbody tr:hover { background:#f6f8fa; }
-        .empty { padding:24px; background:#f6f8fa; border-radius:6px; text-align:center; color:#57606a; }
-        .more { display:inline-block; margin-top:20px; padding:10px 18px; background:#1f6feb; color:#fff !important; text-decoration:none; border-radius:6px; font-weight:600; }
-        .footer { color:#8c959f; font-size:12px; margin-top:20px; text-align:right; }
+        .star-na {{ color:#8c959f; }}
+        tbody tr:hover {{ background:#f6f8fa; }}
+        .empty {{ padding:24px; background:#f6f8fa; border-radius:6px; text-align:center; color:#57606a; }}
+        .more {{ display:inline-block; margin-top:20px; padding:10px 18px; background:#1f6feb; color:#fff !important; text-decoration:none; border-radius:6px; font-weight:600; }}
+        .footer {{ color:#8c959f; font-size:12px; margin-top:20px; text-align:right; }}
     </style></head><body>
         {body}
         <p><a class="more" href="{REPORT_URL}" target="_blank">查看全部持仓与历史走势 →</a></p>
