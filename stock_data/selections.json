@@ -10398,5 +10398,36 @@
   "20260819": {
     "scan_time": "2026-08-19 16:49:39",
     "stocks": []
+  },
+  "20260820": {
+    "scan_time": "2026-08-20 22:51:15",
+    "stocks": [
+      {
+        "code": "sz.300765",
+        "name": "石药创新",
+        "price": 51.78,
+        "buy_price": 51.78,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 20.0,
+        "amount": 3213000000.0000005,
+        "star": 3,
+        "score": 0.5442,
+        "conditions": {}
+      },
+      {
+        "code": "sz.301080",
+        "name": "百普赛斯",
+        "price": 96.66,
+        "buy_price": 96.66,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 12.72,
+        "amount": 3153000000.0,
+        "star": 1,
+        "score": 0.2988,
+        "conditions": {}
+      }
+    ]
   }
 }
