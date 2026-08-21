@@ -59,11 +59,14 @@ class TencentKlineSource(DataSource):
         try:
             resp = self._sess.get(KLINE_URL, params={'param': param}, timeout=10)
             data = json.loads(resp.text)
+            # 限流/异常时腾讯会把 data 或其子节点返回成字符串，必须逐层校验类型，
+            # 否则 .get 打在 str 上抛 AttributeError 并冲出整轮同步循环
+            node = data.get('data') if isinstance(data, dict) else None
+            node = node.get(tc) if isinstance(node, dict) else None
+            rows = (node.get('qfqday') or node.get('day')) if isinstance(node, dict) else None
         except Exception:
             return None
 
-        node = (data or {}).get('data', {}).get(tc, {})
-        rows = node.get('qfqday') or node.get('day')
         if not rows:
             return None
 

@@ -30,6 +30,15 @@ def _iso(d: str) -> str:
     return d
 
 
+def _try_login(source) -> bool:
+    """登录单个数据源，失败只返回 False，不让异常向上冲。"""
+    try:
+        return bool(source.login())
+    except Exception as e:
+        print(f"  [{type(source).__name__}] login 失败: {type(e).__name__}: {e}")
+        return False
+
+
 class Router:
     def __init__(self):
         self.sina = SinaSource()
@@ -143,27 +152,36 @@ class Router:
 
     def _fetch_kline_online(self, code: str, start: str, end: str) -> Optional[pd.DataFrame]:
         # 腾讯HTTP日K(443端口，最稳) -> mootdx -> akshare -> baostock 兜底
-        df = self.tx_kline.get_kline(code, start, end)
-        if df is not None and not df.empty:
+        # 每个源单独兜异常：单只票在某个源上解析失败只降级到下一个源，
+        # 不能让异常冲出 sync_kline_db 的循环导致整轮同步中断
+        def _try(fn):
+            try:
+                df = fn()
+            except Exception as e:
+                print(f"  [{code}] 源取数异常，降级: {type(e).__name__}: {e}")
+                return None
+            return df if (df is not None and not df.empty) else None
+
+        df = _try(lambda: self.tx_kline.get_kline(code, start, end))
+        if df is not None:
             return df
 
         if not self._mootdx_logged_in:
-            self._mootdx_logged_in = self.mootdx.login()
+            self._mootdx_logged_in = _try_login(self.mootdx)
         if self._mootdx_logged_in:
-            df = self.mootdx.get_kline(code, start, end)
-            if df is not None and not df.empty:
+            df = _try(lambda: self.mootdx.get_kline(code, start, end))
+            if df is not None:
                 return df
 
         if not self._ak_logged_in:
-            self._ak_logged_in = self.ak.login()
-        df = self.ak.get_kline(code, start, end)
-        if df is not None and not df.empty:
+            self._ak_logged_in = _try_login(self.ak)
+        df = _try(lambda: self.ak.get_kline(code, start, end))
+        if df is not None:
             return df
 
         if not self._bs_logged_in:
-            self._bs_logged_in = self.bs.login()
-        df = self.bs.get_kline(code, start, end)
-        return df
+            self._bs_logged_in = _try_login(self.bs)
+        return _try(lambda: self.bs.get_kline(code, start, end))
 
     # ---------- sector / board ----------
     def get_sector_boards(self, board_type: str, force_refresh: bool = False) -> pd.DataFrame:
