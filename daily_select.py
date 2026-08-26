@@ -208,6 +208,13 @@ def prefilter_by_amount(stock_list, end_date: str, min_amount: float = 2.5e9):
         cache_df = pd.DataFrame(rows)
         cache_df.to_csv(cache_path, index=False)
 
+    # 上游全挂时 rows 为空，pd.DataFrame([]) 是无列空表，直接取 'amount' 会 KeyError。
+    # 此时应优雅返回 0 只候选，让 daily_select 正常产出空结果并触发推送——
+    # 崩溃会让 run_daily.sh 判定 rc=1 跳过推送，反而收不到"今天上游挂了"的通知。
+    if cache_df.empty or 'amount' not in cache_df.columns:
+        print(f"[预筛] {end_date} 全市场取数均失败（0 行），上游可能整体不可用 → 0 只候选")
+        return []
+
     kept = cache_df[cache_df['amount'] >= min_amount].sort_values('amount', ascending=False)
     print(f"[预筛] 完成 → 阈值 {min_amount/1e8:.0f} 亿过滤后 {len(kept)} 只（缓存 {cache_path.name}）")
     return list(zip(kept['code'].tolist(), kept['name'].tolist()))

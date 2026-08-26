@@ -18,6 +18,12 @@ def sync_today():
     fc = result.get('failed_codes') or []
     if fc:
         print(f"  failed_sample={','.join(fc)}")
+    tripped = {n: s for n, s in (result.get('breaker') or {}).items() if s.get('tripped')}
+    if tripped:
+        detail = ' '.join(f"{n}(skipped={s['skipped']},probes={s['probes']},"
+                          f"slow={s.get('slow_calls', 0)})"
+                          for n, s in tripped.items())
+        print(f"  breaker_tripped={detail}")
     return result
 
 

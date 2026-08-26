@@ -39,6 +39,73 @@ def _try_login(source) -> bool:
         return False
 
 
+class _SourceBreaker:
+    """单个数据源的轮内熔断状态。仅在一轮 sync 内有效，不跨轮持久化。
+
+    上游可用性是分钟级波动的，跨轮记忆只会让下一轮误判；跨轮的"死码"名单由
+    KlineDB.failed_codes 负责，两者维度不同。
+    """
+
+    def __init__(self, name: str, fail_threshold: int = 20, probe_interval: int = 200,
+                 slow_call_s: float = 3.0):
+        self.name = name
+        self.fail_threshold = fail_threshold
+        self.probe_interval = probe_interval
+        self.slow_call_s = slow_call_s
+        self.consecutive_fails = 0
+        self.tripped = False
+        self.calls_since_probe = 0
+        self.skipped = 0
+        self.probes = 0
+        self.slow_calls = 0
+
+    def should_skip(self) -> bool:
+        """熔断期内是否跳过本次调用；到达试探间隔时放行一次（half_open）。"""
+        if not self.tripped:
+            return False
+        self.calls_since_probe += 1
+        if self.calls_since_probe >= self.probe_interval:
+            self.calls_since_probe = 0
+            self.probes += 1
+            return False
+        self.skipped += 1
+        return True
+
+    def on_success(self):
+        if self.tripped:
+            print(f"  [breaker] {self.name} 恢复，解除熔断")
+        self.consecutive_fails = 0
+        self.tripped = False
+        self.calls_since_probe = 0
+
+    def on_error(self):
+        self.consecutive_fails += 1
+        if not self.tripped and self.consecutive_fails >= self.fail_threshold:
+            self.tripped = True
+            self.calls_since_probe = 0
+            print(f"  [breaker] {self.name} 连续失败 {self.consecutive_fails} 次，"
+                  f"本轮熔断（每 {self.probe_interval} 只试探一次）")
+
+    def on_call(self, elapsed: float, raised: bool):
+        """按"是否抛异常 + 单次耗时"判定本次调用的健康度。
+
+        只看异常不够——各源都在内部吞掉了异常（如 mootdx 静默超时后返回 None），
+        2026-08-21 的同步就是全程 0 次异常却跑了 15.6 小时。正常成功调用是毫秒级，
+        静默超时是秒级，所以耗时才是可靠信号。退市票的空返回是快速返回，
+        不会被误判。
+        """
+        if elapsed >= self.slow_call_s:
+            self.slow_calls += 1
+        if raised or elapsed >= self.slow_call_s:
+            self.on_error()
+        else:
+            self.on_success()
+
+    def stats(self) -> dict:
+        return {'tripped': self.tripped, 'skipped': self.skipped,
+                'probes': self.probes, 'slow_calls': self.slow_calls}
+
+
 class Router:
     def __init__(self):
         self.sina = SinaSource()
@@ -150,38 +217,55 @@ class Router:
                 df[c] = pd.to_numeric(df[c], errors='coerce')
         return df
 
-    def _fetch_kline_online(self, code: str, start: str, end: str) -> Optional[pd.DataFrame]:
-        # 腾讯HTTP日K(443端口，最稳) -> mootdx -> akshare -> baostock 兜底
+    def _kline_source_chain(self):
+        """日K取数的降级链：腾讯HTTP日K(443端口，最稳) -> mootdx -> akshare -> baostock 兜底。
+
+        每项为 (名称, 源对象, 登录态属性名或 None, 登录失败是否跳过该源)。
+        mootdx 未登录成功时无法取数，故 gate=True；akshare/baostock 的 login
+        只是可用性探测，失败也照常尝试，保持既有行为。
+        """
+        return [
+            ('tencent',  self.tx_kline, None,                   False),
+            ('mootdx',   self.mootdx,   '_mootdx_logged_in',    True),
+            ('akshare',  self.ak,       '_ak_logged_in',        False),
+            ('baostock', self.bs,       '_bs_logged_in',        False),
+        ]
+
+    def _ensure_login(self, src, attr: Optional[str]) -> bool:
+        """按需登录并缓存登录态；无需登录的源直接返回 True。"""
+        if attr is None:
+            return True
+        if not getattr(self, attr):
+            setattr(self, attr, _try_login(src))
+        return getattr(self, attr)
+
+    def _fetch_kline_online(self, code: str, start: str, end: str,
+                            breakers: Optional[dict] = None) -> Optional[pd.DataFrame]:
         # 每个源单独兜异常：单只票在某个源上解析失败只降级到下一个源，
-        # 不能让异常冲出 sync_kline_db 的循环导致整轮同步中断
-        def _try(fn):
+        # 不能让异常冲出 sync_kline_db 的循环导致整轮同步中断。
+        # breakers 为 None 时（如按需补拉路径）行为与无熔断时完全一致。
+        for name, src, login_attr, gate in self._kline_source_chain():
+            br = breakers.get(name) if breakers else None
+            if br is not None and br.should_skip():
+                continue
+            # 登录与取数是两个阶段，登录失败不计入熔断的连续失败计数
+            if not self._ensure_login(src, login_attr) and gate:
+                continue
+            t_call = time.time()
             try:
-                df = fn()
+                df = src.get_kline(code, start, end)
             except Exception as e:
-                print(f"  [{code}] 源取数异常，降级: {type(e).__name__}: {e}")
-                return None
-            return df if (df is not None and not df.empty) else None
-
-        df = _try(lambda: self.tx_kline.get_kline(code, start, end))
-        if df is not None:
-            return df
-
-        if not self._mootdx_logged_in:
-            self._mootdx_logged_in = _try_login(self.mootdx)
-        if self._mootdx_logged_in:
-            df = _try(lambda: self.mootdx.get_kline(code, start, end))
-            if df is not None:
+                print(f"  [{code}] {name} 取数异常，降级: {type(e).__name__}: {e}")
+                if br is not None:
+                    br.on_call(time.time() - t_call, raised=True)
+                continue
+            # 耗时超阈值时即使拿到了数据也记为失败信号——取数正确性与源健康度
+            # 是两件独立的事，数据照常使用
+            if br is not None:
+                br.on_call(time.time() - t_call, raised=False)
+            if df is not None and not df.empty:
                 return df
-
-        if not self._ak_logged_in:
-            self._ak_logged_in = _try_login(self.ak)
-        df = _try(lambda: self.ak.get_kline(code, start, end))
-        if df is not None:
-            return df
-
-        if not self._bs_logged_in:
-            self._bs_logged_in = _try_login(self.bs)
-        return _try(lambda: self.bs.get_kline(code, start, end))
+        return None
 
     # ---------- sector / board ----------
     def get_sector_boards(self, board_type: str, force_refresh: bool = False) -> pd.DataFrame:
@@ -237,7 +321,9 @@ class Router:
     # ---------- sync ----------
     def sync_kline_db(self, start: str, end: str, codes: Optional[List[str]] = None,
                       full: bool = False, skip_retry_gte: int = 5,
-                      skip_window_days: int = 7) -> dict:
+                      skip_window_days: int = 7, breaker_fail_threshold: int = 20,
+                      breaker_probe_interval: int = 200,
+                      breaker_slow_call_s: float = 3.0) -> dict:
         start = _iso(start)
         end = _iso(end)
         if codes is None:
@@ -252,6 +338,12 @@ class Router:
             skip_set = {r.code for r in fdf.itertuples() if str(r.updated_at)[:10] >= cutoff}
             if skip_set:
                 print(f"  [sync] 跳过死码 {len(skip_set)} 只（retry_cnt>={skip_retry_gte} 且 {skip_window_days} 日内仍失败）")
+        # 源级熔断：每轮新建，不跨轮持久化。与上面的死码名单是两个维度——
+        # skip_set 记"这只票取不到"，breaker 记"这个源现在不通"。
+        breakers = {name: _SourceBreaker(name, fail_threshold=breaker_fail_threshold,
+                                        probe_interval=breaker_probe_interval,
+                                        slow_call_s=breaker_slow_call_s)
+                    for name, _, _, _ in self._kline_source_chain()}
         synced = 0
         failed = []
         skipped_dead = 0
@@ -267,7 +359,7 @@ class Router:
                     continue
                 if last:
                     real_start = (pd.Timestamp(last) + pd.Timedelta(days=1)).strftime('%Y-%m-%d')
-            df = self._fetch_kline_online(code, real_start, end)
+            df = self._fetch_kline_online(code, real_start, end, breakers=breakers)
             if df is None or df.empty:
                 failed.append(code)
                 self.db.mark_failed(code, 'empty_from_all_sources')
@@ -282,6 +374,7 @@ class Router:
                       f"skipped_dead={skipped_dead} elapsed={time.time()-t0:.0f}s")
         self.db.meta_set('last_sync_date', end)
         return {'synced': synced, 'failed': len(failed), 'skipped_dead': skipped_dead,
+                'breaker': {n: b.stats() for n, b in breakers.items()},
                 'failed_codes': failed[:20], 'elapsed_s': round(time.time() - t0, 1)}
 
 
