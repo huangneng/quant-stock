@@ -323,7 +323,8 @@ class Router:
                       full: bool = False, skip_retry_gte: int = 5,
                       skip_window_days: int = 7, breaker_fail_threshold: int = 20,
                       breaker_probe_interval: int = 200,
-                      breaker_slow_call_s: float = 3.0) -> dict:
+                      breaker_slow_call_s: float = 3.0,
+                      mark_failed_max_fail_rate: float = 0.2) -> dict:
         start = _iso(start)
         end = _iso(end)
         if codes is None:
@@ -361,19 +362,31 @@ class Router:
                     real_start = (pd.Timestamp(last) + pd.Timedelta(days=1)).strftime('%Y-%m-%d')
             df = self._fetch_kline_online(code, real_start, end, breakers=breakers)
             if df is None or df.empty:
+                # 仅累积，落库延后到轮末按整体失败率判定：连续失败可能是"这只票死了"，
+                # 也可能是"上游挂了"，后者不该把全市场写进死码名单（会自锁）
                 failed.append(code)
-                self.db.mark_failed(code, 'empty_from_all_sources')
                 continue
             df = df.copy()
             df['code'] = code
             self.db.upsert_kline(df)
-            self.db.clear_failed(code)
+            self.db.clear_failed(code)  # 成功即清零，保持即时——这是自锁的唯一出口
             synced += 1
             if (i + 1) % 200 == 0:
                 print(f"  [sync] {i+1}/{len(codes)} synced={synced} failed={len(failed)} "
                       f"skipped_dead={skipped_dead} elapsed={time.time()-t0:.0f}s")
+        attempted = synced + len(failed)
+        fail_rate = (len(failed) / attempted) if attempted else 0.0
+        marked = 0
+        if failed and fail_rate <= mark_failed_max_fail_rate:
+            for code in failed:
+                self.db.mark_failed(code, 'empty_from_all_sources')
+            marked = len(failed)
+        elif failed:
+            print(f"  [sync] 失败率 {fail_rate:.1%} > {mark_failed_max_fail_rate:.0%}，"
+                  f"判定为上游故障而非个股问题，本轮 {len(failed)} 只失败不计入 failed_codes")
         self.db.meta_set('last_sync_date', end)
         return {'synced': synced, 'failed': len(failed), 'skipped_dead': skipped_dead,
+                'fail_rate': round(fail_rate, 4), 'marked_failed': marked,
                 'breaker': {n: b.stats() for n, b in breakers.items()},
                 'failed_codes': failed[:20], 'elapsed_s': round(time.time() - t0, 1)}
 

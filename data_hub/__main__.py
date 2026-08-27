@@ -14,7 +14,10 @@ def sync_today():
     print(f"[sync_kline] incremental {start} ~ {end}")
     result = hub.sync_kline_db(start, end, full=False)
     print(f"  synced={result.get('synced',0)} failed={result.get('failed',0)} "
+          f"fail_rate={result.get('fail_rate',0):.1%} marked_failed={result.get('marked_failed',0)} "
           f"skipped_dead={result.get('skipped_dead',0)} elapsed={result.get('elapsed_s',0):.1f}s")
+    if result.get('failed') and not result.get('marked_failed'):
+        print("  注意：本轮失败未计入 failed_codes（判定为上游故障，避免死码名单自锁）")
     fc = result.get('failed_codes') or []
     if fc:
         print(f"  failed_sample={','.join(fc)}")

@@ -41,11 +41,13 @@ def sync_kline_db(start: str, end: str, codes: Optional[list] = None,
                   full: bool = False, skip_retry_gte: int = 5,
                   skip_window_days: int = 7, breaker_fail_threshold: int = 20,
                   breaker_probe_interval: int = 200,
-                  breaker_slow_call_s: float = 3.0) -> dict:
+                  breaker_slow_call_s: float = 3.0,
+                  mark_failed_max_fail_rate: float = 0.2) -> dict:
     """增量/全量同步 KlineDB。
 
-    返回 {synced, failed, skipped_dead, breaker, failed_codes, elapsed_s}。
-    breaker 为每个数据源的轮内熔断统计 {tripped, skipped, probes, slow_calls}。
+    返回 {synced, failed, fail_rate, marked_failed, skipped_dead, breaker,
+    failed_codes, elapsed_s}。breaker 为每源轮内熔断统计。
+    失败率超过 mark_failed_max_fail_rate 时判定为上游故障，本轮失败不写 failed_codes。
     """
     from data_hub.router import get_router
     return get_router().sync_kline_db(start, end, codes=codes, full=full,
@@ -53,7 +55,8 @@ def sync_kline_db(start: str, end: str, codes: Optional[list] = None,
                                       skip_window_days=skip_window_days,
                                       breaker_fail_threshold=breaker_fail_threshold,
                                       breaker_probe_interval=breaker_probe_interval,
-                                      breaker_slow_call_s=breaker_slow_call_s)
+                                      breaker_slow_call_s=breaker_slow_call_s,
+                                      mark_failed_max_fail_rate=mark_failed_max_fail_rate)
 
 
 def get_new_high_stocks(symbols=('历史新高', '一年新高')) -> set:
