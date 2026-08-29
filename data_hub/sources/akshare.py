@@ -44,6 +44,11 @@ class AkshareSource(DataSource):
                     df[c] = pd.to_numeric(df[c], errors='coerce')
                 else:
                     df[c] = 0.0
+            # 东财 stock_zh_a_hist 的「成交量」单位是手、「成交额」是元，
+            # 而统一 schema 要求 volume 是股——漏掉这步换算会让 volume 小 100 倍，
+            # 污染所有量能类特征（amount 是对的，所以成交额预筛不受影响）。
+            # 同类换算见 tencent_kline.py 的 vol_multiplier。
+            df['volume'] = df['volume'] * 100.0
             return df[['date', 'open', 'high', 'low', 'close', 'volume', 'amount', 'turn', 'pctChg']]
         except Exception:
             return None
