@@ -5,7 +5,7 @@ import time
 import re
 import pandas as pd
 
-from data_hub.sources.base import UNIFIED_COLS
+from data_hub.sources.base import UNIFIED_COLS, SourceUnavailable
 from data_hub.sources.sina import SinaSource
 from data_hub.sources.tencent import TencentSource
 from data_hub.sources.baostock import BaostockSource
@@ -47,17 +47,20 @@ class _SourceBreaker:
     """
 
     def __init__(self, name: str, fail_threshold: int = 20, probe_interval: int = 200,
-                 slow_call_s: float = 3.0):
+                 slow_call_s: float = 3.0, recover_threshold: int = 3):
         self.name = name
         self.fail_threshold = fail_threshold
         self.probe_interval = probe_interval
         self.slow_call_s = slow_call_s
+        self.recover_threshold = recover_threshold
         self.consecutive_fails = 0
+        self.consecutive_successes = 0
         self.tripped = False
         self.calls_since_probe = 0
         self.skipped = 0
         self.probes = 0
         self.slow_calls = 0
+        self.recovered = 0
 
     def should_skip(self) -> bool:
         """熔断期内是否跳过本次调用；到达试探间隔时放行一次（half_open）。"""
@@ -72,13 +75,23 @@ class _SourceBreaker:
         return True
 
     def on_success(self):
-        if self.tripped:
-            print(f"  [breaker] {self.name} 恢复，解除熔断")
         self.consecutive_fails = 0
-        self.tripped = False
-        self.calls_since_probe = 0
+        self.consecutive_successes += 1
+        if not self.tripped:
+            return
+        if self.consecutive_successes >= self.recover_threshold:
+            print(f"  [breaker] {self.name} 连续 {self.consecutive_successes} 次成功，解除熔断")
+            self.tripped = False
+            self.calls_since_probe = 0
+            self.recovered += 1
+        else:
+            # 试探成功但还不够判定恢复：把计数顶满，让紧邻的下一只票继续试探，
+            # 形成一小段连续探测。真健康时几只票就能恢复；时好时坏的源
+            # （baostock 的慢失败夹快速空返回）不会再靠单次侥幸解除熔断
+            self.calls_since_probe = self.probe_interval
 
     def on_error(self):
+        self.consecutive_successes = 0
         self.consecutive_fails += 1
         if not self.tripped and self.consecutive_fails >= self.fail_threshold:
             self.tripped = True
@@ -103,11 +116,35 @@ class _SourceBreaker:
 
     def stats(self) -> dict:
         return {'tripped': self.tripped, 'skipped': self.skipped,
-                'probes': self.probes, 'slow_calls': self.slow_calls}
+                'probes': self.probes, 'slow_calls': self.slow_calls,
+                'recovered': self.recovered}
+
+
+class _Throttle:
+    """单个数据源的最小请求间隔控制。
+
+    2026-08-27/28 的封禁是重试风暴打出来的：每轮 5207 只票 × 最多 4 个源，
+    无任何间隔地打同一个域名，腾讯 WAF 直接封 IP。节流把请求速率压到
+    人类可解释的范围，代价是每轮多几分钟——相比封禁一整天完全值得。
+
+    按源独立计时：腾讯被节流不该拖慢 baostock。
+    """
+
+    def __init__(self, min_interval_s: float = 0.1):
+        self.min_interval_s = min_interval_s
+        self._last_call = 0.0
+
+    def wait(self):
+        if self.min_interval_s <= 0:
+            return
+        gap = time.time() - self._last_call
+        if gap < self.min_interval_s:
+            time.sleep(self.min_interval_s - gap)
+        self._last_call = time.time()
 
 
 class Router:
-    def __init__(self):
+    def __init__(self, min_request_interval_s: float = 0.3):
         self.sina = SinaSource()
         self.tencent = TencentSource()
         self.bs = BaostockSource()
@@ -121,6 +158,8 @@ class Router:
         self._bs_logged_in = False
         self._mootdx_logged_in = False
         self._ak_logged_in = False
+        self.min_request_interval_s = min_request_interval_s
+        self._throttles: dict = {}
 
     # ---------- snapshot ----------
     def get_market_snapshot(self, codes: Optional[list] = None) -> dict:
@@ -239,6 +278,13 @@ class Router:
             setattr(self, attr, _try_login(src))
         return getattr(self, attr)
 
+    def _throttle_for(self, name: str) -> _Throttle:
+        t = self._throttles.get(name)
+        if t is None:
+            t = _Throttle(self.min_request_interval_s)
+            self._throttles[name] = t
+        return t
+
     def _fetch_kline_online(self, code: str, start: str, end: str,
                             breakers: Optional[dict] = None) -> Optional[pd.DataFrame]:
         # 每个源单独兜异常：单只票在某个源上解析失败只降级到下一个源，
@@ -251,9 +297,17 @@ class Router:
             # 登录与取数是两个阶段，登录失败不计入熔断的连续失败计数
             if not self._ensure_login(src, login_attr) and gate:
                 continue
+            # 节流放在真正要发请求之前——被熔断跳过的源不付延迟成本，
+            # 否则熔断省下的时间会被节流原封不动吃回去
+            self._throttle_for(name).wait()
             t_call = time.time()
             try:
                 df = src.get_kline(code, start, end)
+            except SourceUnavailable:
+                # 源自己已经打过告警，这里再打一遍会按票数刷屏（实测同一句印了 380+ 次）
+                if br is not None:
+                    br.on_call(time.time() - t_call, raised=True)
+                continue
             except Exception as e:
                 print(f"  [{code}] {name} 取数异常，降级: {type(e).__name__}: {e}")
                 if br is not None:
@@ -324,7 +378,10 @@ class Router:
                       skip_window_days: int = 7, breaker_fail_threshold: int = 20,
                       breaker_probe_interval: int = 200,
                       breaker_slow_call_s: float = 3.0,
-                      mark_failed_max_fail_rate: float = 0.2) -> dict:
+                      breaker_recover_threshold: int = 3,
+                      mark_failed_max_fail_rate: float = 0.2,
+                      early_stop_min_samples: int = 300,
+                      early_stop_fail_rate: float = 0.9) -> dict:
         start = _iso(start)
         end = _iso(end)
         if codes is None:
@@ -343,13 +400,26 @@ class Router:
         # skip_set 记"这只票取不到"，breaker 记"这个源现在不通"。
         breakers = {name: _SourceBreaker(name, fail_threshold=breaker_fail_threshold,
                                         probe_interval=breaker_probe_interval,
-                                        slow_call_s=breaker_slow_call_s)
+                                        slow_call_s=breaker_slow_call_s,
+                                        recover_threshold=breaker_recover_threshold)
                     for name, _, _, _ in self._kline_source_chain()}
         synced = 0
         failed = []
         skipped_dead = 0
+        aborted = None
         t0 = time.time()
         for i, code in enumerate(codes):
+            # 整轮早停：样本足够且失败率极高时，说明是上游整体不可用而非个股问题，
+            # 继续跑完剩下几千只只会浪费几小时并把 IP 送进 WAF 名单。
+            # 只统计真正尝试过的票（skipped_dead / 已是最新的不计入），避免稀释失败率。
+            attempted_now = synced + len(failed)
+            if (early_stop_min_samples > 0 and attempted_now >= early_stop_min_samples
+                    and len(failed) / attempted_now > early_stop_fail_rate):
+                aborted = (f'early_stop: 已尝试 {attempted_now} 只，失败率 '
+                           f'{len(failed) / attempted_now:.1%} > {early_stop_fail_rate:.0%}，'
+                           f'判定上游整体不可用，剩余 {len(codes) - i} 只跳过')
+                print(f"  [sync] {aborted}")
+                break
             if code in skip_set:
                 skipped_dead += 1
                 continue
@@ -384,9 +454,13 @@ class Router:
         elif failed:
             print(f"  [sync] 失败率 {fail_rate:.1%} > {mark_failed_max_fail_rate:.0%}，"
                   f"判定为上游故障而非个股问题，本轮 {len(failed)} 只失败不计入 failed_codes")
-        self.db.meta_set('last_sync_date', end)
+        # 早停意味着这一轮没跑完，绝不能推进 last_sync_date——否则下次增量会
+        # 从一个从未真正同步过的日期起算，中间的空洞永久留在库里
+        if aborted is None:
+            self.db.meta_set('last_sync_date', end)
         return {'synced': synced, 'failed': len(failed), 'skipped_dead': skipped_dead,
                 'fail_rate': round(fail_rate, 4), 'marked_failed': marked,
+                'aborted': aborted,
                 'breaker': {n: b.stats() for n, b in breakers.items()},
                 'failed_codes': failed[:20], 'elapsed_s': round(time.time() - t0, 1)}
 

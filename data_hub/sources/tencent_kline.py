@@ -13,7 +13,7 @@ import json
 import pandas as pd
 import requests
 
-from data_hub.sources.base import DataSource, UNIFIED_COLS
+from data_hub.sources.base import DataSource, UNIFIED_COLS, SourceUnavailable
 
 KLINE_URL = 'https://web.ifzq.gtimg.cn/appstock/app/fqkline/get'
 HEADERS = {
@@ -58,6 +58,17 @@ class TencentKlineSource(DataSource):
         param = f'{tc},day,,,{count},qfq'
         try:
             resp = self._sess.get(KLINE_URL, params={'param': param}, timeout=10)
+        except Exception:
+            return None
+        # 被 WAF 拦截时腾讯返回 501 + waf.tencent.com 跳转页，解析只会得到"0 行"，
+        # 与"该股票没有数据"无法区分。这是源级故障，必须抛异常让熔断器认出来——
+        # 返回 None 会被判为"这只票没数据"，5207 只票会逐个继续喂请求给 WAF。
+        # 判定放在 try 外面，否则会被下面的 except Exception 吞掉。
+        if resp.status_code == 501 or 'waf.tencent.com' in resp.text[:500]:
+            print(f"  [tencent] 请求被 WAF 拦截（HTTP {resp.status_code}），"
+                  f"IP 可能已被限流封禁，建议停止同步等待解封")
+            raise SourceUnavailable(f'tencent WAF blocked (HTTP {resp.status_code})')
+        try:
             data = json.loads(resp.text)
             # 限流/异常时腾讯会把 data 或其子节点返回成字符串，必须逐层校验类型，
             # 否则 .get 打在 str 上抛 AttributeError 并冲出整轮同步循环

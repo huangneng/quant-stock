@@ -18,6 +18,9 @@ def sync_today():
           f"skipped_dead={result.get('skipped_dead',0)} elapsed={result.get('elapsed_s',0):.1f}s")
     if result.get('failed') and not result.get('marked_failed'):
         print("  注意：本轮失败未计入 failed_codes（判定为上游故障，避免死码名单自锁）")
+    if result.get('aborted'):
+        print(f"  本轮已中止：{result['aborted']}")
+        print("  last_sync_date 未推进，上游恢复后需重跑本轮")
     fc = result.get('failed_codes') or []
     if fc:
         print(f"  failed_sample={','.join(fc)}")
@@ -27,6 +30,10 @@ def sync_today():
                           f"slow={s.get('slow_calls', 0)})"
                           for n, s in tripped.items())
         print(f"  breaker_tripped={detail}")
+    recovered = {n: s for n, s in (result.get('breaker') or {}).items() if s.get('recovered')}
+    if recovered:
+        detail = ' '.join(f"{n}(x{s['recovered']})" for n, s in recovered.items())
+        print(f"  breaker_recovered={detail}")
     return result
 
 
