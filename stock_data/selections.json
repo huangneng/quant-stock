@@ -10652,5 +10652,75 @@
         "conditions": {}
       }
     ]
+  },
+  "20260831": {
+    "scan_time": "2026-08-31 16:18:55",
+    "stocks": [
+      {
+        "code": "sz.002396",
+        "name": "星网锐捷",
+        "price": 40.36,
+        "buy_price": 40.36,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 5255000000.0,
+        "star": 4,
+        "score": 0.658,
+        "conditions": {}
+      },
+      {
+        "code": "sh.688002",
+        "name": "睿创微纳",
+        "price": 185.0,
+        "buy_price": 185.0,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 14.41,
+        "amount": 4239000000.0,
+        "star": 4,
+        "score": 0.6496,
+        "conditions": {}
+      },
+      {
+        "code": "sh.601169",
+        "name": "北京银行",
+        "price": 5.35,
+        "buy_price": 5.35,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 5.11,
+        "amount": 3143000000.0,
+        "star": 4,
+        "score": 0.6327,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600722",
+        "name": "金牛化工",
+        "price": 16.8,
+        "buy_price": 16.8,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.02,
+        "amount": 2636000000.0,
+        "star": 3,
+        "score": 0.5377,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000712",
+        "name": "锦龙股份",
+        "price": 12.98,
+        "buy_price": 12.98,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 3119000000.0,
+        "star": 3,
+        "score": 0.4977,
+        "conditions": {}
+      }
+    ]
   }
 }
