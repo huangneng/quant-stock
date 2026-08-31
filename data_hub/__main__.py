@@ -21,6 +21,9 @@ def sync_today():
     if result.get('aborted'):
         print(f"  本轮已中止：{result['aborted']}")
         print("  last_sync_date 未推进，上游恢复后需重跑本轮")
+    elif not result.get('last_sync_advanced', True):
+        print(f"  本轮 skipped_unsettled={result.get('skipped_unsettled',0)}，一行未落库，"
+              f"last_sync_date 未推进（盘中跑批属正常，收盘后需重跑）")
     fc = result.get('failed_codes') or []
     if fc:
         print(f"  failed_sample={','.join(fc)}")

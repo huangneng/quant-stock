@@ -10439,7 +10439,7 @@
     "stocks": []
   },
   "20260826": {
-    "scan_time": "2026-08-27 09:37:57",
+    "scan_time": "2026-08-31 10:29:30",
     "stocks": [
       {
         "code": "sh.600127",
@@ -10449,7 +10449,7 @@
         "signal_type": "breakthrough",
         "is_limit_up": false,
         "pct_change": 5.26,
-        "amount": 2923000000.0,
+        "amount": 2889000000.0,
         "star": 3,
         "score": 0.5168,
         "conditions": {}
@@ -10457,8 +10457,113 @@
     ]
   },
   "20260827": {
-    "scan_time": "2026-08-27 16:49:23",
-    "stocks": []
+    "scan_time": "2026-08-31 10:29:49",
+    "stocks": [
+      {
+        "code": "sz.000017",
+        "name": "深中华A",
+        "price": 10.41,
+        "buy_price": 10.41,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.04,
+        "amount": 595000000.0,
+        "star": 5,
+        "score": 0.7339,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600479",
+        "name": "千金药业",
+        "price": 12.12,
+        "buy_price": 12.12,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.98,
+        "amount": 1293000000.0,
+        "star": 4,
+        "score": 0.6114,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600127",
+        "name": "金健米业",
+        "price": 10.78,
+        "buy_price": 10.78,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1362000000.0,
+        "star": 3,
+        "score": 0.5356,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002003",
+        "name": "伟星股份",
+        "price": 11.73,
+        "buy_price": 11.73,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 6.93,
+        "amount": 430999999.99999994,
+        "star": 2,
+        "score": 0.468,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600613",
+        "name": "神奇制药",
+        "price": 11.61,
+        "buy_price": 11.61,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.05,
+        "amount": 623000000.0,
+        "star": 2,
+        "score": 0.4238,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600371",
+        "name": "万向德农",
+        "price": 10.49,
+        "buy_price": 10.49,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.96,
+        "amount": 169000000.0,
+        "star": 2,
+        "score": 0.4186,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002084",
+        "name": "海鸥住工",
+        "price": 5.27,
+        "buy_price": 5.27,
+        "signal_type": "one_word",
+        "is_limit_up": true,
+        "pct_change": 10.02,
+        "amount": 28000000.000000004,
+        "star": 2,
+        "score": 0.3663,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002742",
+        "name": "三圣股份",
+        "price": 5.67,
+        "buy_price": 5.67,
+        "signal_type": "one_word",
+        "is_limit_up": true,
+        "pct_change": 10.1,
+        "amount": 56000000.00000001,
+        "star": 1,
+        "score": 0.3424,
+        "conditions": {}
+      }
+    ]
   },
   "20260828": {
     "scan_time": "2026-08-31 09:49:36",
@@ -10474,6 +10579,76 @@
         "amount": 3268000000.0,
         "star": 4,
         "score": 0.6127,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260825": {
+    "scan_time": "2026-08-31 10:28:40",
+    "stocks": [
+      {
+        "code": "sh.688169",
+        "name": "石头科技",
+        "price": 135.0,
+        "buy_price": 135.0,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 20.0,
+        "amount": 2521000000.0,
+        "star": 4,
+        "score": 0.6773,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600613",
+        "name": "神奇制药",
+        "price": 10.27,
+        "buy_price": 10.27,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 3.74,
+        "amount": 1693000000.0,
+        "star": 4,
+        "score": 0.6537,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600508",
+        "name": "上海能源",
+        "price": 10.87,
+        "buy_price": 10.87,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.02,
+        "amount": 419000000.00000006,
+        "star": 4,
+        "score": 0.6216,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000017",
+        "name": "深中华A",
+        "price": 8.6,
+        "buy_price": 8.6,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.97,
+        "amount": 496000000.0,
+        "star": 2,
+        "score": 0.4909,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002084",
+        "name": "海鸥住工",
+        "price": 4.35,
+        "buy_price": 4.35,
+        "signal_type": "one_word",
+        "is_limit_up": true,
+        "pct_change": 10.13,
+        "amount": 11000000.0,
+        "star": 2,
+        "score": 0.3893,
         "conditions": {}
       }
     ]

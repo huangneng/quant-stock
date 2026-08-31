@@ -583,13 +583,19 @@ class Router:
             print(f"  [sync] 失败率 {fail_rate:.1%} > {mark_failed_max_fail_rate:.0%}，"
                   f"判定为上游故障而非个股问题，本轮 {len(failed)} 只失败不计入 failed_codes")
         # 早停意味着这一轮没跑完，绝不能推进 last_sync_date——否则下次增量会
-        # 从一个从未真正同步过的日期起算，中间的空洞永久留在库里
-        if aborted is None:
+        # 从一个从未真正同步过的日期起算，中间的空洞永久留在库里。
+        # 盘中跑批是同一个问题的另一副面孔：所有票的当日行都被未定型守卫拦掉，
+        # 一行都没落库，这种轮次推进 last_sync_date 就是谎报。
+        # 不能只看 synced == 0——「全市场已是最新、确实无事可做」也是 0，那种该推进，
+        # 所以必须靠 skipped_unsettled 把两者区分开。
+        wrote_nothing = synced == 0 and skipped_unsettled > 0
+        advanced = aborted is None and not wrote_nothing
+        if advanced:
             self.db.meta_set('last_sync_date', end)
         return {'synced': synced, 'failed': len(failed), 'skipped_dead': skipped_dead,
                 'skipped_unsettled': skipped_unsettled,
                 'fail_rate': round(fail_rate, 4), 'marked_failed': marked,
-                'aborted': aborted,
+                'aborted': aborted, 'last_sync_advanced': advanced,
                 'timeouts': dict(self._timeouts),
                 'breaker': {n: b.stats() for n, b in breakers.items()},
                 'failed_codes': failed[:20], 'elapsed_s': round(time.time() - t0, 1)}
