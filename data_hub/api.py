@@ -45,7 +45,8 @@ def sync_kline_db(start: str, end: str, codes: Optional[list] = None,
                   breaker_recover_threshold: int = 3,
                   mark_failed_max_fail_rate: float = 0.2,
                   early_stop_min_samples: int = 300,
-                  early_stop_fail_rate: float = 0.9) -> dict:
+                  early_stop_fail_rate: float = 0.9,
+                  source_call_timeout_s: float = 30.0) -> dict:
     """增量/全量同步 KlineDB。
 
     返回 {synced, failed, fail_rate, marked_failed, skipped_dead, aborted, breaker,
@@ -53,6 +54,9 @@ def sync_kline_db(start: str, end: str, codes: Optional[list] = None,
     失败率超过 mark_failed_max_fail_rate 时判定为上游故障，本轮失败不写 failed_codes。
     尝试满 early_stop_min_samples 只且失败率超 early_stop_fail_rate 时整轮中止，
     aborted 带上原因，且不推进 last_sync_date。
+    单次取数调用超过 source_call_timeout_s 秒会被硬超时打断并降级，
+    timeouts 记录各源超时次数——mootdx 等源不设 socket 超时，没有这道兜底
+    一个永不返回的调用能挂死整条流水线。
     """
     from data_hub.router import get_router
     return get_router().sync_kline_db(start, end, codes=codes, full=full,
@@ -64,7 +68,8 @@ def sync_kline_db(start: str, end: str, codes: Optional[list] = None,
                                       breaker_recover_threshold=breaker_recover_threshold,
                                       mark_failed_max_fail_rate=mark_failed_max_fail_rate,
                                       early_stop_min_samples=early_stop_min_samples,
-                                      early_stop_fail_rate=early_stop_fail_rate)
+                                      early_stop_fail_rate=early_stop_fail_rate,
+                                      source_call_timeout_s=source_call_timeout_s)
 
 
 def get_new_high_stocks(symbols=('历史新高', '一年新高')) -> set:

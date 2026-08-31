@@ -10461,19 +10461,19 @@
     "stocks": []
   },
   "20260828": {
-    "scan_time": "2026-08-29 17:48:29",
+    "scan_time": "2026-08-31 09:49:36",
     "stocks": [
       {
         "code": "sh.600127",
         "name": "金健米业",
-        "price": 11.4,
-        "buy_price": 11.4,
-        "signal_type": "gap",
+        "price": 11.77,
+        "buy_price": 11.77,
+        "signal_type": "breakthrough",
         "is_limit_up": false,
-        "pct_change": 5.75,
-        "amount": 1739000000.0,
-        "star": 3,
-        "score": 0.5328,
+        "pct_change": 9.18,
+        "amount": 3268000000.0,
+        "star": 4,
+        "score": 0.6127,
         "conditions": {}
       }
     ]

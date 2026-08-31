@@ -20,6 +20,19 @@ class SourceUnavailable(Exception):
     """
 
 
+class SourceCallTimeout(Exception):
+    """单次取数调用超过硬超时未返回。
+
+    与 SourceUnavailable 的分界：一次调用卡住 ≠ 整个源不可用。
+    源可能只是某只票的连接坏了，下一只就正常。所以这里不下「源已死」的结论，
+    只把它当作一次失败交给熔断器统计——连续失败够多次才熔断。
+
+    存在的理由：熔断器只能评估已完成的调用。mootdx 等源不设 socket 超时，
+    半关闭的连接会让 recv 永久阻塞，这种调用连 on_call 都进不去，
+    2026-08-29 因此挂死 35 小时。
+    """
+
+
 class DataSource(ABC):
     name: str = 'base'
 

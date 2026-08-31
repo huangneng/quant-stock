@@ -34,6 +34,10 @@ def sync_today():
     if recovered:
         detail = ' '.join(f"{n}(x{s['recovered']})" for n, s in recovered.items())
         print(f"  breaker_recovered={detail}")
+    timeouts = {n: c for n, c in (result.get('timeouts') or {}).items() if c}
+    if timeouts:
+        detail = ' '.join(f"{n}(x{c})" for n, c in timeouts.items())
+        print(f"  call_timeouts={detail}（单次取数超时被打断并降级）")
     return result
 
 

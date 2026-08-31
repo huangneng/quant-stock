@@ -107,10 +107,121 @@ def fix(con, cur, bad, do_write, db_path):
     con.commit()
 
 
+def _sina_latest(codes, batch=600):
+    """批量拉新浪快照，返回 {code: (date, volume_shares)}。
+
+    日期以响应自带的字段为准——不能假设「今天」，周末/节假日快照给的是
+    最后一个交易日。
+    """
+    import requests
+    sess = requests.Session()
+    sess.headers.update({'User-Agent': 'Mozilla/5.0',
+                         'Referer': 'https://finance.sina.com.cn/'})
+    out = {}
+    for i in range(0, len(codes), batch):
+        chunk = codes[i:i + batch]
+        url = 'https://hq.sinajs.cn/list=' + ','.join(c.replace('.', '') for c in chunk)
+        resp = sess.get(url, timeout=15)
+        resp.encoding = 'gbk'
+        for line, code in zip(resp.text.strip().splitlines(), chunk):
+            try:
+                p = line.split('"')[1].split(',')
+            except IndexError:
+                continue
+            if len(p) < 32:
+                continue
+            try:
+                out[code] = (p[30], float(p[8]))
+            except ValueError:
+                continue
+        time.sleep(0.3)
+    return out
+
+
+def check_latest(cur, selected_codes):
+    """用新浪快照比对最后一个交易日的成交量，检测盘中写入的半截 K 线。
+
+    库内自洽性检查发现不了半截行：amount 是用同一个偏小的 volume 算出来的，
+    amount/(close*volume) 仍然是 1。只能靠外部参照。
+    """
+    codes = [r[0] for r in cur.execute('SELECT code FROM universe ORDER BY code')]
+    print(f'\n=== 半截 K 线检测（新浪快照比对，{len(codes):,} 只）===')
+    ref = _sina_latest(codes)
+    if not ref:
+        print('  新浪快照取数失败，无法检测')
+        return -1
+    dates = {}
+    for d, _ in ref.values():
+        dates[d] = dates.get(d, 0) + 1
+    target = max(dates, key=dates.get)
+    print(f'  快照主日期 {target}（{dates[target]:,} 只），参照 {len(ref):,} 只')
+
+    rows = dict(cur.execute('SELECT code, volume FROM kline WHERE date = ?', (target,)).fetchall())
+    if not rows:
+        print(f'  库内没有 {target} 的数据，无法比对')
+        return -1
+    print(f'  库内 {target} 有 {len(rows):,} 行')
+
+    buckets = {'一致(<1%)': 0, '偏小1~50%': 0, '偏小50~90%': 0, '偏小>90%': 0, '库偏大': 0}
+    detail = []
+    for code, (d, vol_ref) in ref.items():
+        if d != target or code not in rows:
+            continue
+        vol_db = rows[code]
+        if not vol_db or vol_db <= 0 or vol_ref <= 0:
+            continue
+        short = 1 - vol_db / vol_ref          # 库比参照少的比例
+        if short < -0.01:
+            buckets['库偏大'] += 1
+        elif short <= 0.01:
+            buckets['一致(<1%)'] += 1
+        else:
+            if short <= 0.5:
+                buckets['偏小1~50%'] += 1
+            elif short <= 0.9:
+                buckets['偏小50~90%'] += 1
+            else:
+                buckets['偏小>90%'] += 1
+            detail.append((short, code, vol_db, vol_ref))
+    for k, v in buckets.items():
+        print(f'    {k:12s} {v:6,}')
+    if not detail:
+        print('  未发现半截 K 线')
+        return 0
+    detail.sort(reverse=True)
+    print(f'  偏差最严重的 {min(10, len(detail))} 只:')
+    for short, code, vdb, vref in detail[:10]:
+        mark = '  ← 历史选股标的' if code in selected_codes else ''
+        print(f'    {code}  库={vdb:>15,.0f}  实际={vref:>15,.0f}  少 {short:6.1%}{mark}')
+    hit = sum(1 for _, c, _, _ in detail if c in selected_codes)
+    print(f'  其中历史选股标的 {hit} 只')
+    return len(detail)
+
+
+def _load_selected_codes():
+    """读 selections.json 里出现过的代码，用于在报告里标注影响面。"""
+    import json
+    p = ROOT / 'stock_data' / 'selections.json'
+    if not p.exists():
+        return set()
+    try:
+        d = json.loads(p.read_text(encoding='utf-8'))
+    except Exception:
+        return set()
+    out = set()
+    for v in d.values():
+        for st in (v.get('stocks') or []):
+            if st.get('code'):
+                out.add(st['code'])
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(description='kline 表一致性巡检')
     ap.add_argument('--fix', action='store_true', help='修复手/股单位错误的行')
     ap.add_argument('--yes', action='store_true', help='与 --fix 同用时才真正写库')
+    ap.add_argument('--check-latest', action='store_true',
+                    help='用新浪快照比对最后一个交易日成交量，检测盘中半截 K 线')
     ap.add_argument('--db', default=str(DB_PATH), help='库路径（便于在备份库上演练）')
     args = ap.parse_args()
 
@@ -126,8 +237,11 @@ def main():
         fix(con, cur, bad, args.yes, db_path)
         print('\n=== 修复后复查 ===')
         bad = audit(cur)
+    partial = 0
+    if args.check_latest:
+        partial = check_latest(cur, _load_selected_codes())
     con.close()
-    return 1 if bad else 0
+    return 1 if (bad or partial) else 0
 
 
 if __name__ == '__main__':

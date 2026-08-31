@@ -1,11 +1,14 @@
 """智能路由：根据请求类型选源、组合本地库 + 在线源。"""
 from __future__ import annotations
 from typing import Optional, List
+from datetime import time as dt_time
+import signal
+import threading
 import time
 import re
 import pandas as pd
 
-from data_hub.sources.base import UNIFIED_COLS, SourceUnavailable
+from data_hub.sources.base import UNIFIED_COLS, SourceUnavailable, SourceCallTimeout
 from data_hub.sources.sina import SinaSource
 from data_hub.sources.tencent import TencentSource
 from data_hub.sources.baostock import BaostockSource
@@ -22,12 +25,43 @@ _SNAPSHOT_CACHE: dict = {}
 # 统一日期格式：所有入参先归一化为 YYYY-MM-DD
 _DATE_PAT = re.compile(r'^\d{8}$')
 
+# 收盘时间。集合竞价 15:00 结束，快照时间戳实测在 15:34 左右，
+# 取 15:00 作分界是保守的——15:00~15:34 之间落库的行可能仍不完整，
+# 由「跳过规则只跳 last > end」的重取兜住。
+_MARKET_CLOSE = dt_time(15, 0)
+
 
 def _iso(d: str) -> str:
     """YYYYMMDD → YYYY-MM-DD，其他原样返回。"""
     if _DATE_PAT.match(d):
         return f'{d[:4]}-{d[4:6]}-{d[6:8]}'
     return d
+
+
+def _now() -> pd.Timestamp:
+    """当前时间。单独抽出来是为了让「是否已收盘」的判定可测。"""
+    return pd.Timestamp.now()
+
+
+def _is_unsettled(date_str: str) -> bool:
+    """该日期的 K 线是否还没定型：当日且尚未收盘。
+
+    盘中拿到的当日 K 线只含到当时为止的成交量，落库会被后续同步跳过而永久固化
+    （2026-08-28 有 302 只票因此量偏小 1.01~9 倍）。这种行可以返回给调用方用于
+    实时判断，但绝不能写进历史库。
+    """
+    now = _now()
+    return date_str == now.strftime('%Y-%m-%d') and now.time() < _MARKET_CLOSE
+
+
+def _drop_unsettled(df: Optional[pd.DataFrame]) -> Optional[pd.DataFrame]:
+    """剔除尚未定型的当日行；无该类行时原样返回，避免无谓拷贝。"""
+    if df is None or df.empty or 'date' not in df.columns:
+        return df
+    mask = df['date'].astype(str).map(_is_unsettled)
+    if not mask.any():
+        return df
+    return df[~mask]
 
 
 def _try_login(source) -> bool:
@@ -120,6 +154,48 @@ class _SourceBreaker:
                 'recovered': self.recovered}
 
 
+class _CallTimeout:
+    """给单次取数调用套硬超时的上下文管理器。
+
+    为什么必须有：熔断器只能评估**已完成**的调用。mootdx 不给 socket 设超时，
+    半关闭的连接会让 recv 永久阻塞，这种调用连 on_call 都进不去，
+    2026-08-29 的同步因此挂死 35 小时、累计 CPU 只有 8.38 秒。
+    逐个源加超时行不通——mootdx 的 bars() 不收 timeout，akshare 内部
+    大量端点不传 timeout，baostock 是自实现 socket 协议。只能在外层兜。
+
+    SIGALRM 会打断阻塞的系统调用，Python 随即在调用点抛异常。
+    限制：只能在主线程用，且 Windows 没有 SIGALRM——不满足时静默退化为
+    无超时，绝不能因为拿不到看门狗就让取数整体失败。
+    """
+
+    def __init__(self, seconds: float):
+        self.seconds = seconds
+        self.armed = False
+        self._old = None
+
+    def _fire(self, sig, frm):
+        raise SourceCallTimeout(f'取数调用超过 {self.seconds:g}s 未返回')
+
+    def __enter__(self):
+        if self.seconds <= 0 or not hasattr(signal, 'SIGALRM'):
+            return self
+        if threading.current_thread() is not threading.main_thread():
+            return self
+        self._old = signal.signal(signal.SIGALRM, self._fire)
+        signal.setitimer(signal.ITIMER_REAL, self.seconds)
+        self.armed = True
+        return self
+
+    def __exit__(self, *exc):
+        # 无条件恢复：调用体自己抛异常时也必须清掉 itimer 和 handler，
+        # 否则闹钟会在后续任意位置炸开，污染全局信号状态
+        if self.armed:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+            signal.signal(signal.SIGALRM, self._old)
+            self.armed = False
+        return False
+
+
 class _Throttle:
     """单个数据源的最小请求间隔控制。
 
@@ -144,7 +220,8 @@ class _Throttle:
 
 
 class Router:
-    def __init__(self, min_request_interval_s: float = 0.3):
+    def __init__(self, min_request_interval_s: float = 0.3,
+                 source_call_timeout_s: float = 30.0):
         self.sina = SinaSource()
         self.tencent = TencentSource()
         self.bs = BaostockSource()
@@ -160,6 +237,10 @@ class Router:
         self._ak_logged_in = False
         self.min_request_interval_s = min_request_interval_s
         self._throttles: dict = {}
+        # 单次取数调用的硬超时上限。逐个源加超时行不通（第三方库内部不传 timeout），
+        # 只能在取数层统一兜底，否则一个永不返回的调用能挂死整条流水线。
+        self.source_call_timeout_s = source_call_timeout_s
+        self._timeouts: dict = {}
 
     # ---------- snapshot ----------
     def get_market_snapshot(self, codes: Optional[list] = None) -> dict:
@@ -237,8 +318,21 @@ class Router:
                 online_in = online[(online['date'] >= start) & (online['date'] <= end)].copy()
                 if not online_in.empty:
                     online_in['code'] = code
-                    self.db.upsert_kline(online_in)
+                    # 盘中的当日行不落库，但下面第 4 步仍会把实时行拼进返回值
+                    to_store = _drop_unsettled(online_in)
+                    if to_store is not None and not to_store.empty:
+                        self.db.upsert_kline(to_store)
                 df = self.db.query_kline(code, start, end)
+                if online_in is not None and not online_in.empty:
+                    # 库里被守卫拦掉的当日行，补回到返回值里供实时判断使用
+                    unsettled = online_in[online_in['date'].astype(str).map(_is_unsettled)]
+                    if not unsettled.empty:
+                        if df is None:
+                            df = pd.DataFrame(columns=UNIFIED_COLS)
+                        keep = [c for c in unsettled.columns if c in df.columns or df.empty]
+                        df = pd.concat([df, unsettled[keep]], ignore_index=True)
+                        df = df.drop_duplicates(subset=['date'], keep='last').sort_values('date')
+                        df = df.reset_index(drop=True)
 
         # 4) require_today：拼今日 Sina 行
         if require_today and end >= today_iso:
@@ -302,7 +396,15 @@ class Router:
             self._throttle_for(name).wait()
             t_call = time.time()
             try:
-                df = src.get_kline(code, start, end)
+                with _CallTimeout(self.source_call_timeout_s):
+                    df = src.get_kline(code, start, end)
+            except SourceCallTimeout as e:
+                # 硬超时：这次调用卡住了，不代表整个源已死，交给熔断器统计
+                self._timeouts[name] = self._timeouts.get(name, 0) + 1
+                print(f"  [{code}] {name} {e}，降级")
+                if br is not None:
+                    br.on_call(time.time() - t_call, raised=True)
+                continue
             except SourceUnavailable:
                 # 源自己已经打过告警，这里再打一遍会按票数刷屏（实测同一句印了 380+ 次）
                 if br is not None:
@@ -381,13 +483,25 @@ class Router:
                       breaker_recover_threshold: int = 3,
                       mark_failed_max_fail_rate: float = 0.2,
                       early_stop_min_samples: int = 300,
-                      early_stop_fail_rate: float = 0.9) -> dict:
+                      early_stop_fail_rate: float = 0.9,
+                      source_call_timeout_s: Optional[float] = None) -> dict:
         start = _iso(start)
         end = _iso(end)
+        if source_call_timeout_s is not None:
+            self.source_call_timeout_s = source_call_timeout_s
+        self._timeouts = {}
         if codes is None:
             codes = self.get_universe()['code'].tolist()
         if not self._bs_logged_in:
-            self._bs_logged_in = self.bs.login()
+            # 预登录也要套超时：baostock 不可用时 login 本身就要 ~75s（实测），
+            # 极端情况下可能永久阻塞——那会在进入循环之前就挂死，
+            # 取数层的看门狗根本来不及生效
+            try:
+                with _CallTimeout(self.source_call_timeout_s):
+                    self._bs_logged_in = self.bs.login()
+            except Exception as e:
+                print(f"  [sync] baostock 预登录失败（不影响其他源）: {type(e).__name__}: {e}")
+                self._bs_logged_in = False
         # 增量模式下跳过"死码"：连续失败达阈值且近期仍在失败的标的（多为退市/长期停牌）
         skip_set = set()
         if not full and skip_retry_gte > 0:
@@ -406,6 +520,7 @@ class Router:
         synced = 0
         failed = []
         skipped_dead = 0
+        skipped_unsettled = 0
         aborted = None
         t0 = time.time()
         for i, code in enumerate(codes):
@@ -426,10 +541,17 @@ class Router:
             real_start = start
             if not full:
                 last = self.db.get_last_date(code)
-                if last and last >= end:
+                # 只跳过「库里已有超过 end 的数据」的票。
+                # 不能用 last >= end：盘中写入的 date==end 行只含到当时为止的成交量，
+                # 收盘后若因此跳过，这条半截 K 线就被永久固化——2026-08-28 有 302 只
+                # sh.600 的量因此偏小 1.01~9 倍，其中 17 只是历史选股标的。
+                if last and last > end:
                     continue
-                if last:
+                if last and last < end:
                     real_start = (pd.Timestamp(last) + pd.Timedelta(days=1)).strftime('%Y-%m-%d')
+                elif last:
+                    # last == end：重取当天，起点就取 end 本身
+                    real_start = end
             df = self._fetch_kline_online(code, real_start, end, breakers=breakers)
             if df is None or df.empty:
                 # 仅累积，落库延后到轮末按整体失败率判定：连续失败可能是"这只票死了"，
@@ -438,7 +560,13 @@ class Router:
                 continue
             df = df.copy()
             df['code'] = code
-            self.db.upsert_kline(df)
+            # 盘中的当日行不落库：它只含到当时为止的成交量，写进去会被后续同步
+            # 跳过而永久固化
+            to_store = _drop_unsettled(df)
+            if to_store is None or to_store.empty:
+                skipped_unsettled += 1
+                continue
+            self.db.upsert_kline(to_store)
             self.db.clear_failed(code)  # 成功即清零，保持即时——这是自锁的唯一出口
             synced += 1
             if (i + 1) % 200 == 0:
@@ -459,8 +587,10 @@ class Router:
         if aborted is None:
             self.db.meta_set('last_sync_date', end)
         return {'synced': synced, 'failed': len(failed), 'skipped_dead': skipped_dead,
+                'skipped_unsettled': skipped_unsettled,
                 'fail_rate': round(fail_rate, 4), 'marked_failed': marked,
                 'aborted': aborted,
+                'timeouts': dict(self._timeouts),
                 'breaker': {n: b.stats() for n, b in breakers.items()},
                 'failed_codes': failed[:20], 'elapsed_s': round(time.time() - t0, 1)}
 
