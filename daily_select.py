@@ -37,6 +37,13 @@ SELECTIONS_FILE = ROOT / 'stock_data' / 'selections.json'
 PREFILTER_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
+# 预筛取数护栏。快照是 9 个批量请求，重试极便宜；baostock 兜底是 5207 次
+# 逐票请求，2026-09-01 实测跑满要 4.5 小时且拿到 0 行，必须能早退。
+SNAPSHOT_RETRIES = 3
+SNAPSHOT_BACKOFF_S = 2.0
+PREFILTER_MIN_SAMPLES = 200
+PREFILTER_FAIL_RATE = 0.9
+
 
 # ---------- 1. 当日成交额预筛 ----------
 def _is_real_stock(code: str) -> bool:
@@ -137,27 +144,47 @@ def prefilter_by_amount(stock_list, end_date: str, min_amount: float = 2.5e9):
             print(f"[预筛] 缓存读取失败: {e}，重新扫描")
             cache_path.unlink(missing_ok=True)
 
-    # 优先走 data_hub 实时快照（Sina，全市场 ~1.5s）
-    if end_date == today_str:
-        print(f"[预筛] 走 data_hub.get_market_snapshot ...")
-        t0 = time.time()
-        codes = [c for c, _ in stock_list]
+    # 优先走 data_hub 实时快照（Sina，全市场 ~1.5s）。
+    # 不再要求 end_date == today：快照返回的是行情自带日期，收盘后到次日
+    # 开盘前它持有的正是上一交易日的定型值，那个窗口补历史日期完全可用。
+    # 实测对比：快照 9 个请求 ~1.5s，baostock 逐票兜底 5207 次要 4.5 小时。
+    print(f"[预筛] 走 data_hub.get_market_snapshot ...")
+    t0 = time.time()
+    codes = [c for c, _ in stock_list]
+    valid_codes = {c for c, _ in stock_list}
+    rows = []
+    for attempt in range(SNAPSHOT_RETRIES):
         snapshot = hub.get_market_snapshot(codes)
         rows = []
+        stale = 0
         for bs_code, info in snapshot.items():
-            if 'amount' in info and info['amount'] > 0:
-                rows.append({'code': bs_code, 'name': info.get('name', ''), 'amount': info['amount']})
+            if bs_code not in valid_codes:
+                continue
+            # 日期必须对得上。退市股的末次报价停在几个月前，
+            # 盘后跑历史日期时快照里也可能是别的交易日——混进来就是错数据。
+            if str(info.get('date')) != end_date:
+                stale += 1
+                continue
+            if info.get('amount', 0) > 0:
+                rows.append({'code': bs_code, 'name': info.get('name', ''),
+                             'amount': info['amount']})
         if rows:
-            cache_df = pd.DataFrame(rows)
-            # 仅保留 stock_list 内的票
-            valid_codes = {c for c, _ in stock_list}
-            cache_df = cache_df[cache_df['code'].isin(valid_codes)]
-            cache_df.to_csv(cache_path, index=False)
-            kept = cache_df[cache_df['amount'] >= min_amount].sort_values('amount', ascending=False)
-            print(f"[预筛] data_hub 完成 {len(cache_df)} 只 / {time.time()-t0:.1f}s → 阈值 {min_amount/1e8:.0f} 亿过滤后 {len(kept)} 只")
-            return list(zip(kept['code'].tolist(), kept['name'].tolist()))
-        else:
-            print("[预筛] data_hub 快照返回空，回退 baostock 单只查询")
+            break
+        # 09-01 的实测：18:43 全源取不到，次日 08:10 同一端点秒出。
+        # 重试成本只有 9 个请求，比掉进逐票兜底便宜几个数量级。
+        print(f"[预筛] 快照第 {attempt+1}/{SNAPSHOT_RETRIES} 次为空"
+              f"（日期不符 {stale} 只）")
+        if attempt < SNAPSHOT_RETRIES - 1:
+            time.sleep(SNAPSHOT_BACKOFF_S * (2 ** attempt))
+    if rows:
+        cache_df = pd.DataFrame(rows)
+        cache_df.to_csv(cache_path, index=False)
+        coverage = len(cache_df) / max(1, len(valid_codes))
+        kept = cache_df[cache_df['amount'] >= min_amount].sort_values('amount', ascending=False)
+        print(f"[预筛] data_hub 完成 {len(cache_df)} 只 / 覆盖率 {coverage:.1%} / "
+              f"{time.time()-t0:.1f}s → 阈值 {min_amount/1e8:.0f} 亿过滤后 {len(kept)} 只")
+        return list(zip(kept['code'].tolist(), kept['name'].tolist()))
+    print("[预筛] 快照重试后仍为空，回退 baostock 单只查询")
 
     # 兜底：非今日日期 / Sina 不可用时走 baostock 逐只查询
     print(f"[预筛] {end_date} 当日成交额（首次扫描，结果将缓存）")
@@ -165,8 +192,20 @@ def prefilter_by_amount(stock_list, end_date: str, min_amount: float = 2.5e9):
     bs.login()
     rows = []
     cache_df = None
+    aborted = None
     try:
         for i, (code, name) in enumerate(stock_list):
+            # 兜底早停：与 sync_kline_db 同一套语义——样本够了且失败率极高，
+            # 说明是上游整体不可用而非个股问题，继续跑完只是白耗几小时。
+            attempted = i
+            if attempted >= PREFILTER_MIN_SAMPLES:
+                fail_rate = (attempted - len(rows)) / attempted
+                if fail_rate > PREFILTER_FAIL_RATE:
+                    aborted = (f'已尝试 {attempted} 只，失败率 {fail_rate:.1%} > '
+                               f'{PREFILTER_FAIL_RATE:.0%}，判定上游整体不可用，'
+                               f'剩余 {len(stock_list) - i} 只跳过')
+                    print(f"  [预筛] {aborted}")
+                    break
             for retry in range(3):
                 try:
                     rs = bs.query_history_k_data_plus(
@@ -192,9 +231,9 @@ def prefilter_by_amount(stock_list, end_date: str, min_amount: float = 2.5e9):
                             pass
                         bs.login()
             if (i + 1) % 500 == 0:
-                pd.DataFrame(rows).to_csv(cache_path, index=False)
+                if rows:
+                    pd.DataFrame(rows).to_csv(cache_path, index=False)
                 print(f"  [预筛] 进度 {i+1}/{len(stock_list)}（已落盘 {len(rows)} 行）")
-            if (i + 1) % 500 == 0:
                 try:
                     bs.logout()
                 except Exception:
@@ -206,7 +245,12 @@ def prefilter_by_amount(stock_list, end_date: str, min_amount: float = 2.5e9):
         except Exception:
             pass
         cache_df = pd.DataFrame(rows)
-        cache_df.to_csv(cache_path, index=False)
+        # 空结果绝不落盘。以前无条件 to_csv 会留下一个 1 字节的空缓存文件，
+        # 下次靠"缓存为空"校验删掉才自愈——纯噪音。
+        if rows:
+            cache_df.to_csv(cache_path, index=False)
+        else:
+            cache_path.unlink(missing_ok=True)
 
     # 上游全挂时 rows 为空，pd.DataFrame([]) 是无列空表，直接取 'amount' 会 KeyError。
     # 此时应优雅返回 0 只候选，让 daily_select 正常产出空结果并触发推送——
@@ -387,12 +431,19 @@ def select(today: str, min_amount: float = 2.5e9, throttle: float = 0.02):
         for _cache_suffix in (f'prefilter_amount_{today}_final.csv',
                               f'prefilter_amount_{today}.csv'):
             _cp = PREFILTER_CACHE_DIR / _cache_suffix
-            if _cp.exists():
-                try:
-                    _cdf = pd.read_csv(_cp, dtype={'code': str})
-                    _amount_map = dict(zip(_cdf['code'], _cdf['amount'].astype(float)))
-                except Exception:
-                    pass
+            if not _cp.exists():
+                continue
+            try:
+                _cdf = pd.read_csv(_cp, dtype={'code': str})
+                _amount_map = dict(zip(_cdf['code'], _cdf['amount'].astype(float)))
+            except Exception:
+                pass
+            # 只有真的读出成交额才停止找下一个候选文件。
+            # 以前 break 无条件执行：一个损坏/空的 _final 缓存会让 _amount_map
+            # 留空，于是下面「成交额不足不补入」形同废止，新高榜整张表被无条件
+            # 放行。2026-09-01 实测因此多补入 11 只（候选 14 而非 3），
+            # 其中最小的成交额只有 0.39 亿，远在 25 亿门槛之下。
+            if _amount_map:
                 break
 
         name_map = dict(full_list)

@@ -339,9 +339,14 @@ class Router:
             if df.empty or today_iso not in set(df['date'].tolist()):
                 snap = self.get_market_snapshot([code])
                 row = snap.get(code)
-                if row:
+                # 快照返回的是行情自带日期。收盘后到次日开盘前，它给出的是
+                # 上一交易日的定型值——那种行拼进来就是把旧收盘伪装成今日行，
+                # 而且会与库内同日行重复。require_today 的语义是"要今天的"，
+                # 不是今天的就必须丢掉。
+                if row and str(row.get('date')) == today_iso:
                     new_row = {k: row[k] for k in UNIFIED_COLS}
                     df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+                    df = df.drop_duplicates(subset=['date'], keep='last')
                     df = df.sort_values('date').reset_index(drop=True)
 
         # 5) 类型规整

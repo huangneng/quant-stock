@@ -2,6 +2,9 @@
 
 - 全市场快照 ~1.5s（5500 只 / 600 一批 / GBK）
 - 字段：name,open,prev_close,close,high,low,_,_,volume,amount,...
+  第 30 位为行情日期、第 31 位为行情时间
+- 返回的 `date` 是行情自带日期，不是"今天"：收盘后到次日开盘前，
+  这里给出的是上一交易日的定型值，调用方必须自己判断是否是想要的那天
 """
 from __future__ import annotations
 from typing import Optional
@@ -33,7 +36,6 @@ class SinaSource(SnapshotSource, DataSource):
         self._sess.headers.update(HEADERS)
 
     def get_market_snapshot(self, codes: list) -> dict:
-        today_iso = pd.Timestamp.now().strftime('%Y-%m-%d')
         sina_codes = [_to_sina(c) for c in codes]
         out = {}
         for i in range(0, len(sina_codes), BATCH):
@@ -69,9 +71,18 @@ class SinaSource(SnapshotSource, DataSource):
                     continue
                 if close <= 0 or amount <= 0 or prev_close <= 0:
                     continue
+                # 第 30/31 位是行情自带的日期与时间。这里曾经填
+                # pd.Timestamp.now()，导致「拿到的是哪天的行情」无法判断：
+                # 开盘前调用会把前一交易日的收盘伪装成今日行，退市股停在
+                # 几个月前的报价也会被打上今天的日期。日期缺失就丢弃该行——
+                # 一条不知道属于哪天的 K 线没有任何用处。
+                quote_date = f[30].strip() if len(f) > 30 else ''
+                if not quote_date:
+                    continue
                 pct = (close - prev_close) / prev_close * 100.0
                 out[bs_code] = {
-                    'date': today_iso,
+                    'date': quote_date,
+                    'snapshot_time': f[31].strip() if len(f) > 31 else '',
                     'code': bs_code,
                     'name': f[0],
                     'open': open_,
