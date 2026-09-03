@@ -10766,5 +10766,36 @@
         "conditions": {}
       }
     ]
+  },
+  "20260902": {
+    "scan_time": "2026-09-03 08:44:31",
+    "stocks": [
+      {
+        "code": "sz.003040",
+        "name": "楚天龙",
+        "price": 21.12,
+        "buy_price": 21.12,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 7.87,
+        "amount": 3007000000.0,
+        "star": 3,
+        "score": 0.5049,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600722",
+        "name": "金牛化工",
+        "price": 19.26,
+        "buy_price": 19.26,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 6.64,
+        "amount": 3429999999.9999995,
+        "star": 1,
+        "score": 0.3446,
+        "conditions": {}
+      }
+    ]
   }
 }
