@@ -10797,5 +10797,23 @@
         "conditions": {}
       }
     ]
+  },
+  "20260903": {
+    "scan_time": "2026-09-04 09:28:28",
+    "stocks": [
+      {
+        "code": "sz.002536",
+        "name": "飞龙股份",
+        "price": 63.03,
+        "buy_price": 63.03,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 8.54,
+        "amount": 5606000000.0,
+        "star": 3,
+        "score": 0.5148,
+        "conditions": {}
+      }
+    ]
   }
 }
