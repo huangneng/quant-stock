@@ -10724,7 +10724,7 @@
     ]
   },
   "20260901": {
-    "scan_time": "2026-09-02 08:43:11",
+    "scan_time": "2026-09-04 15:16:42",
     "stocks": [
       {
         "code": "sz.000712",
@@ -10734,7 +10734,7 @@
         "signal_type": "breakthrough",
         "is_limit_up": false,
         "pct_change": 4.01,
-        "amount": 2913000000.0,
+        "amount": 2853000000.0,
         "star": 3,
         "score": 0.5892,
         "conditions": {}
@@ -10747,9 +10747,9 @@
         "signal_type": "breakthrough",
         "is_limit_up": false,
         "pct_change": 7.5,
-        "amount": 3131000000.0,
+        "amount": 3115000000.0,
         "star": 2,
-        "score": 0.4238,
+        "score": 0.4231,
         "conditions": {}
       },
       {
@@ -10760,7 +10760,7 @@
         "signal_type": "breakthrough",
         "is_limit_up": false,
         "pct_change": 3.85,
-        "amount": 2781000000.0,
+        "amount": 2779000000.0,
         "star": 1,
         "score": 0.3246,
         "conditions": {}
@@ -10768,7 +10768,7 @@
     ]
   },
   "20260902": {
-    "scan_time": "2026-09-03 08:44:31",
+    "scan_time": "2026-09-04 15:21:08",
     "stocks": [
       {
         "code": "sz.003040",
@@ -10778,7 +10778,7 @@
         "signal_type": "breakthrough",
         "is_limit_up": false,
         "pct_change": 7.87,
-        "amount": 3007000000.0,
+        "amount": 3052000000.0,
         "star": 3,
         "score": 0.5049,
         "conditions": {}
@@ -10791,15 +10791,15 @@
         "signal_type": "gap",
         "is_limit_up": false,
         "pct_change": 6.64,
-        "amount": 3429999999.9999995,
+        "amount": 3389000000.0,
         "star": 1,
-        "score": 0.3446,
+        "score": 0.3433,
         "conditions": {}
       }
     ]
   },
   "20260903": {
-    "scan_time": "2026-09-04 12:17:23",
+    "scan_time": "2026-09-04 15:44:16",
     "stocks": [
       {
         "code": "sz.002536",
@@ -10811,7 +10811,7 @@
         "pct_change": 8.54,
         "amount": 5606000000.0,
         "star": 3,
-        "score": 0.5148,
+        "score": 0.5146,
         "conditions": {}
       }
     ]
