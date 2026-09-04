@@ -38,6 +38,15 @@ def _iso(d: str) -> str:
     return d
 
 
+def _fmt_dur(seconds: float) -> str:
+    """把秒数写成人读得懂的时长。日志里 '0.2h 超过 0.2h' 这种没法判断。"""
+    if seconds < 90:
+        return f'{seconds:.0f}s'
+    if seconds < 5400:
+        return f'{seconds/60:.0f}min'
+    return f'{seconds/3600:.1f}h'
+
+
 def _now() -> pd.Timestamp:
     """当前时间。单独抽出来是为了让「是否已收盘」的判定可测。"""
     return pd.Timestamp.now()
@@ -288,7 +297,7 @@ class Router:
         # 统一日期格式为 YYYY-MM-DD
         start = _iso(start)
         end = _iso(end)
-        today_iso = pd.Timestamp.now().strftime('%Y-%m-%d')
+        today_iso = _now().strftime('%Y-%m-%d')
 
         # 1) 从 KlineDB 读
         df = self.db.query_kline(code, start, end)
@@ -321,7 +330,7 @@ class Router:
                     # 盘中的当日行不落库，但下面第 4 步仍会把实时行拼进返回值
                     to_store = _drop_unsettled(online_in)
                     if to_store is not None and not to_store.empty:
-                        self.db.upsert_kline(to_store)
+                        self.db.upsert_kline(to_store, amt_src=self._last_amt_src())
                 df = self.db.query_kline(code, start, end)
                 if online_in is not None and not online_in.empty:
                     # 库里被守卫拦掉的当日行，补回到返回值里供实时判断使用
@@ -389,6 +398,7 @@ class Router:
         # 每个源单独兜异常：单只票在某个源上解析失败只降级到下一个源，
         # 不能让异常冲出 sync_kline_db 的循环导致整轮同步中断。
         # breakers 为 None 时（如按需补拉路径）行为与无熔断时完全一致。
+        self._last_kline_src = None
         for name, src, login_attr, gate in self._kline_source_chain():
             br = breakers.get(name) if breakers else None
             if br is not None and br.should_skip():
@@ -425,8 +435,21 @@ class Router:
             if br is not None:
                 br.on_call(time.time() - t_call, raised=False)
             if df is not None and not df.empty:
+                self._last_kline_src = name
                 return df
         return None
+
+    # 哪些源直接返回成交额（精确），哪些是 均价×volume 估出来的（近似）。
+    # 腾讯日K 的返回字段只有 [date,open,close,high,low,volume]，没有成交额；
+    # mootdx 从未向本库写入过一行，其 amount 语义未验证，保守记为近似。
+    _AMT_SRC_BY_SOURCE = {
+        'sina': 'exact', 'akshare': 'exact', 'baostock': 'exact',
+        'tencent': 'approx', 'mootdx': 'approx',
+    }
+
+    def _last_amt_src(self) -> Optional[str]:
+        """上一次取数命中的源对应的成交额精度。未知源返回 None（可被覆盖）。"""
+        return self._AMT_SRC_BY_SOURCE.get(getattr(self, '_last_kline_src', None))
 
     # ---------- sector / board ----------
     def get_sector_boards(self, board_type: str, force_refresh: bool = False) -> pd.DataFrame:
@@ -489,6 +512,9 @@ class Router:
                       mark_failed_max_fail_rate: float = 0.2,
                       early_stop_min_samples: int = 300,
                       early_stop_fail_rate: float = 0.9,
+                      max_round_seconds: float = 7200.0,
+                      slow_avg_seconds: float = 3.0,
+                      slow_min_samples: int = 200,
                       source_call_timeout_s: Optional[float] = None) -> dict:
         start = _iso(start)
         end = _iso(end)
@@ -540,6 +566,30 @@ class Router:
                            f'判定上游整体不可用，剩余 {len(codes) - i} 只跳过')
                 print(f"  [sync] {aborted}")
                 break
+            # 耗时护栏。上面那道早停看的是失败率，`_CallTimeout` 看的是单次调用，
+            # 两者都拦不住「每只票都成功、但每只都慢」这种形态：2026-09-03 那轮
+            # 成功率 95%、每次调用都在 30s 硬超时内返回，却因为均耗时 18s/票
+            # 跑了 16 小时 46 分，到 3200 只时才走完 16.4 小时。
+            elapsed_now = time.time() - t0
+            if max_round_seconds > 0 and elapsed_now > max_round_seconds:
+                aborted = (f'time_budget: 整轮已耗时 {_fmt_dur(elapsed_now)}，'
+                           f'超过 {_fmt_dur(max_round_seconds)} 预算，'
+                           f'剩余 {len(codes) - i} 只跳过')
+                print(f"  [sync] {aborted}")
+                break
+            # 均耗时判据能在烧完预算之前就识别「这轮注定跑不完」，
+            # 不必等两小时才发现问题。
+            if (slow_avg_seconds > 0 and slow_min_samples > 0
+                    and attempted_now >= slow_min_samples):
+                avg = elapsed_now / attempted_now
+                if avg > slow_avg_seconds:
+                    aborted = (f'too_slow: 已尝试 {attempted_now} 只，单票均耗时 '
+                               f'{avg:.1f}s > {slow_avg_seconds:g}s，判定上游劣化，'
+                               f'按此速度全市场需 {_fmt_dur(avg * len(codes))}，'
+                               f'剩余 {len(codes) - i} 只跳过')
+                    print(f"  [sync] {aborted}")
+                    break
+
             if code in skip_set:
                 skipped_dead += 1
                 continue
@@ -571,7 +621,7 @@ class Router:
             if to_store is None or to_store.empty:
                 skipped_unsettled += 1
                 continue
-            self.db.upsert_kline(to_store)
+            self.db.upsert_kline(to_store, amt_src=self._last_amt_src())
             self.db.clear_failed(code)  # 成功即清零，保持即时——这是自锁的唯一出口
             synced += 1
             if (i + 1) % 200 == 0:

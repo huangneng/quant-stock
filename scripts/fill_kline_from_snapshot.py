@@ -104,7 +104,9 @@ def main(argv=None):
     if args.dry_run:
         print(f'覆盖率 {cov:.1%}，--dry-run 未写库')
         return 0
-    n = KlineDB().upsert_kline(pd.DataFrame(rows)[UNIFIED])
+    # 快照直接返回成交额（响应第 9 位，单位元），标为 exact 以免日后
+    # 被腾讯的 均价×volume 近似值覆盖。
+    n = KlineDB().upsert_kline(pd.DataFrame(rows)[UNIFIED], amt_src='exact')
     print(f'覆盖率 {cov:.1%}，已写入/更新 {n} 行，总耗时 {time.time()-t0:.1f}s')
     return 0
 

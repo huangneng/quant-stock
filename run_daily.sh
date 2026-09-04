@@ -41,6 +41,12 @@ if [ -f "$HOME/.quant.env" ]; then
     set +a
 fi
 
+# 推送脚本未收到 PUSH_DATE 时会自己取 date.today()。同步慢的时候整轮能跑到
+# 次日（2026-09-03 那轮 16:26 启动、次日 09:12 才走到推送），那时 date.today()
+# 已经翻页，推送去找次日的 CSV，必然扑空——09-01 和 09-03 两次通知就是这么丢的。
+# 这里固定成跑批当日，与下面传给 daily_select 的 --date 保持同一个值。
+export PUSH_DATE="$today"
+
 # 2. Skip if already ran today
 if [ -f "$STAMP" ] && [ "$(cat "$STAMP")" = "$today" ]; then
     log "already ran today, skip."

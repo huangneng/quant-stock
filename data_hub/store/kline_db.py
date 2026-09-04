@@ -62,9 +62,30 @@ class KlineDB:
     def _init_schema(self):
         with self._conn() as c:
             c.executescript(SCHEMA)
+            self._migrate(c)
+
+    def _migrate(self, c):
+        """幂等迁移。ALTER TABLE 在列已存在时会报错，必须先查 table_info。"""
+        cols = {r[1] for r in c.execute('PRAGMA table_info(kline)')}
+        if 'amt_src' not in cols:
+            # 记录 amount 的精度来源：'exact'（源直接返回成交额）/
+            # 'approx'（均价×volume 估算）/ NULL（历史行，来源未知）。
+            # NULL 必须按「可被覆盖」处理——若当成 exact，历史里那些
+            # 腾讯写进去的近似值就再也刷不掉了。
+            c.execute('ALTER TABLE kline ADD COLUMN amt_src TEXT')
 
     # -------- kline --------
-    def upsert_kline(self, df: pd.DataFrame) -> int:
+    def upsert_kline(self, df: pd.DataFrame, amt_src: Optional[str] = None) -> int:
+        """写入日 K 行。
+
+        amt_src 标注本批 amount 的精度：'exact' / 'approx' / None（未知）。
+        近似值不得覆盖已有的精确值——腾讯不返回成交额，amount 由 均价×volume
+        估出，每次 daily_select 或生成报告触发按需补拉，就会把新浪/baostock
+        的精确值改写成近似值。09-01/02/03 连续三天分别被改写 246 / 109 / 3221 行，
+        偏差最大 4.63%，只能人工修，而快照补数在次日 09:00 就过窗口。
+        其余字段（OHLC/volume/turn/pctChg）不受此限制，照常覆盖——
+        近似只发生在 amount 上。
+        """
         if df is None or df.empty:
             return 0
         cols = ['code', 'date', 'open', 'high', 'low', 'close',
@@ -73,11 +94,25 @@ class KlineDB:
         for c in cols:
             if c not in df.columns:
                 df[c] = None
-        rows = df[cols].itertuples(index=False, name=None)
+        df['amt_src'] = amt_src
+        rows = df[cols + ['amt_src']].itertuples(index=False, name=None)
         with self._lock, self._conn() as c:
             c.executemany(
-                f"INSERT OR REPLACE INTO kline ({','.join(cols)}) "
-                f"VALUES (?,?,?,?,?,?,?,?,?,?)",
+                "INSERT INTO kline "
+                "(code,date,open,high,low,close,volume,amount,turn,pctChg,amt_src) "
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?) "
+                "ON CONFLICT(code,date) DO UPDATE SET "
+                "  open=excluded.open, high=excluded.high, low=excluded.low, "
+                "  close=excluded.close, volume=excluded.volume, "
+                "  turn=excluded.turn, pctChg=excluded.pctChg, "
+                "  amount = CASE "
+                "    WHEN excluded.amt_src = 'exact' THEN excluded.amount "
+                "    WHEN kline.amt_src    = 'exact' THEN kline.amount "
+                "    ELSE excluded.amount END, "
+                "  amt_src = CASE "
+                "    WHEN excluded.amt_src = 'exact' THEN 'exact' "
+                "    WHEN kline.amt_src    = 'exact' THEN 'exact' "
+                "    ELSE excluded.amt_src END",
                 rows,
             )
             return c.total_changes

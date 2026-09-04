@@ -78,29 +78,35 @@ def _prefilter_cache_has_bad_zero_amount(cache_df: pd.DataFrame, end_date: str, 
         print(f"[预筛] 缓存零成交额比例异常 {zero_ratio:.2%}（{len(zero_df)}/{len(cache_df)}），重新扫描")
         return True
 
-    # 单只零值也可能造成漏选；抽样检查近期是否高成交。
-    start_date = (datetime.strptime(end_date, '%Y-%m-%d') - pd.Timedelta(days=14)).strftime('%Y-%m-%d')
+    # 单只零值也可能造成漏选；逐只回查目标日当天到底有没有成交。
+    #
+    # 判据只能看「目标日当天」。原先用的是「近 5 日最高成交额」，那必然把
+    # 真停牌股全部误判成坏缓存：停牌前成交额通常不低，于是整份缓存被删、
+    # 全市场重扫一遍。2026-09-03 实测 6 只真停牌股（雪天盐业、有研硅、
+    # ST萃华、香山股份、*ST元道、宇邦新材）就这样让预筛白跑了一遍。
+    #
+    # 真停牌的特征是「目标日无行，或目标日成交额为 0」；
+    # 缓存真有问题的特征是「目标日 K 线明明有成交额，缓存里却记成 0」。
     for _, row in zero_df.head(80).iterrows():
         code = str(row.get('code', ''))
         name = str(row.get('name', ''))
         if not code:
             continue
         try:
-            hist = hub.get_kline(code, start_date, end_date)
+            hist = hub.get_kline(code, end_date, end_date)
             if hist is None or hist.empty or 'amount' not in hist.columns:
-                continue
-            recent = hist[hist['date'] <= end_date].tail(5)
-            if recent.empty:
-                continue
-            max_amount = float(recent['amount'].fillna(0).max())
-            today_rows = hist[hist['date'] == end_date]
-            today_amount = float(today_rows.iloc[-1]['amount']) if not today_rows.empty else 0.0
-            if max_amount >= min_amount or today_amount >= min_amount:
-                print(
-                    f"[预筛] 缓存疑似异常：{code} {name} amount=0，"
-                    f"近5日最高成交额 {max_amount/1e8:.1f} 亿，当日K线 {today_amount/1e8:.1f} 亿，重新扫描"
-                )
-                return True
+                continue  # 目标日无行 -> 真停牌
+            day_rows = hist[hist['date'] == end_date]
+            if day_rows.empty:
+                continue  # 同上
+            day_amount = float(pd.to_numeric(day_rows.iloc[-1]['amount'], errors='coerce') or 0)
+            if day_amount <= 0:
+                continue  # 当日确实没有成交 -> 真停牌
+            print(
+                f"[预筛] 缓存疑似异常：{code} {name} 缓存 amount=0，"
+                f"但 {end_date} K线成交额 {day_amount/1e8:.2f} 亿，重新扫描"
+            )
+            return True
         except Exception:
             continue
     return False
