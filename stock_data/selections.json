@@ -10815,5 +10815,163 @@
         "conditions": {}
       }
     ]
+  },
+  "20260904": {
+    "scan_time": "2026-09-04 18:14:41",
+    "stocks": []
+  },
+  "20260907": {
+    "scan_time": "2026-09-08 00:07:23",
+    "stocks": [
+      {
+        "code": "sz.003040",
+        "name": "楚天龙",
+        "price": 22.95,
+        "buy_price": 22.95,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 8.66,
+        "amount": 2504000000.0,
+        "star": 3,
+        "score": 0.5201,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300684",
+        "name": "中石科技",
+        "price": 104.36,
+        "buy_price": 104.36,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 17.39,
+        "amount": 4491000000.0,
+        "star": 2,
+        "score": 0.4754,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300189",
+        "name": "神农种业",
+        "price": 7.72,
+        "buy_price": 7.72,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 9.5,
+        "amount": 2635000000.0,
+        "star": 1,
+        "score": 0.2938,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260908": {
+    "scan_time": "2026-09-08 16:52:48",
+    "stocks": [
+      {
+        "code": "sh.600127",
+        "name": "金健米业",
+        "price": 14.79,
+        "buy_price": 14.79,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 9.31,
+        "amount": 4320000000.0,
+        "star": 2,
+        "score": 0.4842,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603228",
+        "name": "景旺电子",
+        "price": 106.97,
+        "buy_price": 106.97,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 0.94,
+        "amount": 6744000000.0,
+        "star": 1,
+        "score": 0.3351,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260909": {
+    "scan_time": "2026-09-09 16:54:48",
+    "stocks": [
+      {
+        "code": "sh.600737",
+        "name": "中粮糖业",
+        "price": 19.8,
+        "buy_price": 19.8,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 9.03,
+        "amount": 5480000000.0,
+        "star": 4,
+        "score": 0.6226,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600108",
+        "name": "亚盛集团",
+        "price": 5.71,
+        "buy_price": 5.71,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 8.14,
+        "amount": 4510000000.0,
+        "star": 2,
+        "score": 0.4215,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600354",
+        "name": "敦煌种业",
+        "price": 10.98,
+        "buy_price": 10.98,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 4.77,
+        "amount": 2609000000.0,
+        "star": 1,
+        "score": 0.2815,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600722",
+        "name": "金牛化工",
+        "price": 20.0,
+        "buy_price": 20.0,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 1.16,
+        "amount": 3465000000.0,
+        "star": 1,
+        "score": 0.1859,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260910": {
+    "scan_time": "2026-09-10 17:06:17",
+    "stocks": [
+      {
+        "code": "sz.000523",
+        "name": "红棉股份",
+        "price": 4.46,
+        "buy_price": 4.46,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 2.29,
+        "amount": 2541000000.0,
+        "star": 2,
+        "score": 0.4375,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260911": {
+    "scan_time": "2026-09-11 16:59:34",
+    "stocks": []
   }
 }
