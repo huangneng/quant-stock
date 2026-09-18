@@ -10971,7 +10971,51 @@
     ]
   },
   "20260911": {
-    "scan_time": "2026-09-11 16:59:34",
+    "scan_time": "2026-09-18 10:35:07",
     "stocks": []
+  },
+  "20260914": {
+    "scan_time": "2026-09-18 10:49:15",
+    "stocks": [
+      {
+        "code": "sz.002815",
+        "name": "崇达技术",
+        "price": 21.12,
+        "buy_price": 21.12,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 5.18,
+        "amount": 3170000000.0,
+        "star": 3,
+        "score": 0.5498,
+        "conditions": {}
+      }
+    ]
+  },
+  "20260915": {
+    "scan_time": "2026-09-18 11:01:34",
+    "stocks": []
+  },
+  "20260916": {
+    "scan_time": "2026-09-18 11:20:10",
+    "stocks": []
+  },
+  "20260917": {
+    "scan_time": "2026-09-18 11:32:15",
+    "stocks": [
+      {
+        "code": "sh.601872",
+        "name": "招商轮船",
+        "price": 21.85,
+        "buy_price": 21.85,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.02,
+        "amount": 3524000000.0,
+        "star": 3,
+        "score": 0.5671,
+        "conditions": {}
+      }
+    ]
   }
 }
