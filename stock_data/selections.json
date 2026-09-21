@@ -11017,5 +11017,23 @@
         "conditions": {}
       }
     ]
+  },
+  "20260918": {
+    "scan_time": "2026-09-21 10:18:33",
+    "stocks": [
+      {
+        "code": "sh.601872",
+        "name": "招商轮船",
+        "price": 22.36,
+        "buy_price": 22.36,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 2.33,
+        "amount": 4905000000.0,
+        "star": 1,
+        "score": 0.3225,
+        "conditions": {}
+      }
+    ]
   }
 }
