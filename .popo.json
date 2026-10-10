@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "deployments": [
+    {
+      "slug": "stock-tracker",
+      "title": "选股策略跟踪系统",
+      "base": "tracker_report",
+      "entry": "index.html",
+      "glob": [
+        "**/*"
+      ],
+      "exclude": [],
+      "lastDeployedAt": "2026-07-14T02:12:19.862550+00:00"
+    }
+  ]
+}

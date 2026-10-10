@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# 大文件 / 生成产物
+*.png
+!mascot/*.png
+*.pkl
+*.parquet
+
+# 本地重建的派生数据库——不进版本控制。
+# kline.db 是从数据源（新浪快照/baostock 等）重建的派生数据，体积大、变化频繁，
+# 曾让 .git 膨胀到 300MB+。克隆后用 scripts 重建，不随仓库分发。
+stock_data/*.db
+stock_data/*.db-wal
+stock_data/*.db-shm
+stock_data/*.db.bak*
+stock_data/failed_codes_backup_*.csv
+
+# 行情缓存（每次 actions 自行恢复）
+stock_data/cache/
+
+# 报告产物
+report_output/
+tracker_report/charts/
+tracker_report/report.pdf
+quant_backtest/charts/
+quant_backtest/*.html
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
+
+# 本地运行产物（launchd）
+logs/
+stock_data/.last_run_date
+stock_data/selections.backup.json
+quant.env
+.quant.env
+
+# 选股后走势研究产物
+stock_research/cache/
+stock_research/output/
+stock_research/notebooks/
