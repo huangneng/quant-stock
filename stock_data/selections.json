@@ -11129,11 +11129,38 @@
     "stocks": []
   },
   "20260930": {
-    "scan_time": "2026-09-30 18:08:45",
-    "stocks": []
+    "scan_time": "2026-10-12 09:25:19",
+    "stocks": [
+      {
+        "code": "sz.301080",
+        "name": "百普赛斯",
+        "price": 141.07,
+        "buy_price": 141.07,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 14.69,
+        "amount": 2739000000.0,
+        "star": 3,
+        "score": 0.5752,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000002",
+        "name": "万科A",
+        "price": 4.26,
+        "buy_price": 4.26,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 4.41,
+        "amount": 5158000000.0,
+        "star": 3,
+        "score": 0.5059,
+        "conditions": {}
+      }
+    ]
   },
   "20261008": {
-    "scan_time": "2026-10-08 17:18:56",
+    "scan_time": "2026-10-12 09:08:39",
     "stocks": []
   },
   "20261009": {
