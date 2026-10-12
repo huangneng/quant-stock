@@ -11166,5 +11166,23 @@
   "20261009": {
     "scan_time": "2026-10-10 09:14:03",
     "stocks": []
+  },
+  "20261012": {
+    "scan_time": "2026-10-12 15:14:05",
+    "stocks": [
+      {
+        "code": "sz.300413",
+        "name": "芒果超媒",
+        "price": 24.16,
+        "buy_price": 24.16,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 5.04,
+        "amount": 4122000000.0,
+        "star": 1,
+        "score": 0.3082,
+        "conditions": {}
+      }
+    ]
   }
 }
