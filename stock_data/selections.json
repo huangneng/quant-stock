@@ -11196,5 +11196,23 @@
   "20261015": {
     "scan_time": "2026-10-15 15:36:39",
     "stocks": []
+  },
+  "20261016": {
+    "scan_time": "2026-10-16 15:10:15",
+    "stocks": [
+      {
+        "code": "sz.300006",
+        "name": "莱美药业",
+        "price": 9.75,
+        "buy_price": 9.75,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 19.93,
+        "amount": 3024000000.0,
+        "star": 5,
+        "score": 0.7228,
+        "conditions": {}
+      }
+    ]
   }
 }
