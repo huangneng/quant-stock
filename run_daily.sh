@@ -103,22 +103,19 @@ log ">>> push_email.py"
 log ">>> push_serverchan.py"
 "$PYTHON" scripts/push_serverchan.py >> "$LOG_FILE" 2>&1 || log "push_serverchan failed"
 
-# 7. 自动提交并推送选股产物（daily_select 已成功；仅提交这两个入库文件）
-#    index.html 由上一步 daily_select 重新生成，这里连同 selections.json 一并提交。
+# 7. 自动提交并推送选股产物。index.html 每次生成都会刷新「更新: <时间戳>」
+#    （tracker_report.py:1500 用 datetime.now()），因此每天都有改动、每天都提交，
+#    让页面上的更新时间反映最新一次跑批——不做「无改动则跳过」判断。
 log ">>> git 自动提交"
 git add stock_data/selections.json tracker_report/index.html 2>>"$LOG_FILE"
-if git diff --cached --quiet; then
-    log "无改动，跳过提交"
-else
-    if git commit -m "chore: 更新 $today 行情与选股（例行自动提交）" >>"$LOG_FILE" 2>&1; then
-        if git push origin main >>"$LOG_FILE" 2>&1; then
-            log "已提交并推送 origin main"
-        else
-            log "已提交但 push 失败（本地已存，需手动 push）"
-        fi
+if git commit -m "chore: 更新 $today 行情与选股（例行自动提交）" >>"$LOG_FILE" 2>&1; then
+    if git push origin main >>"$LOG_FILE" 2>&1; then
+        log "已提交并推送 origin main"
     else
-        log "git commit 失败"
+        log "已提交但 push 失败（本地已存，需手动 push）"
     fi
+else
+    log "git commit 无改动或失败，跳过推送"
 fi
 
 # 8. Mark as done
