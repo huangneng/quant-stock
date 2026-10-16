@@ -11160,16 +11160,187 @@
     ]
   },
   "20261008": {
-    "scan_time": "2026-10-12 09:08:39",
-    "stocks": []
+    "scan_time": "2026-10-16 15:59:48",
+    "stocks": [
+      {
+        "code": "sz.301190",
+        "name": "善水科技",
+        "price": 39.52,
+        "buy_price": 39.52,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 9.99,
+        "amount": 1366000000.0,
+        "star": 2,
+        "score": 0.4728,
+        "conditions": {}
+      }
+    ]
   },
   "20261009": {
-    "scan_time": "2026-10-10 09:14:03",
-    "stocks": []
+    "scan_time": "2026-10-16 16:00:10",
+    "stocks": [
+      {
+        "code": "sz.002242",
+        "name": "九阳股份",
+        "price": 15.13,
+        "buy_price": 15.13,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.04,
+        "amount": 2063000000.0,
+        "star": 4,
+        "score": 0.6315,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300369",
+        "name": "绿盟科技",
+        "price": 10.43,
+        "buy_price": 10.43,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 20.02,
+        "amount": 1007000000.0,
+        "star": 3,
+        "score": 0.5952,
+        "conditions": {}
+      },
+      {
+        "code": "sz.301190",
+        "name": "善水科技",
+        "price": 43.99,
+        "buy_price": 43.99,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 11.31,
+        "amount": 1041000000.0,
+        "star": 3,
+        "score": 0.5771,
+        "conditions": {}
+      },
+      {
+        "code": "sz.301218",
+        "name": "华是科技",
+        "price": 75.72,
+        "buy_price": 75.72,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 11.35,
+        "amount": 1408000000.0,
+        "star": 2,
+        "score": 0.3582,
+        "conditions": {}
+      }
+    ]
   },
   "20261012": {
-    "scan_time": "2026-10-12 16:19:42",
+    "scan_time": "2026-10-16 16:00:28",
     "stocks": [
+      {
+        "code": "sh.601811",
+        "name": "新华文轩",
+        "price": 23.0,
+        "buy_price": 23.0,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1265000000.0,
+        "star": 4,
+        "score": 0.6507,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600241",
+        "name": "时代万恒",
+        "price": 12.94,
+        "buy_price": 12.94,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.03,
+        "amount": 1199000000.0,
+        "star": 3,
+        "score": 0.5736,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600812",
+        "name": "华北制药",
+        "price": 6.63,
+        "buy_price": 6.63,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.95,
+        "amount": 1002000000.0,
+        "star": 3,
+        "score": 0.5357,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002242",
+        "name": "九阳股份",
+        "price": 16.64,
+        "buy_price": 16.64,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.98,
+        "amount": 1997000000.0,
+        "star": 3,
+        "score": 0.5319,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603533",
+        "name": "掌阅科技",
+        "price": 27.98,
+        "buy_price": 27.98,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.98,
+        "amount": 2097000000.0,
+        "star": 3,
+        "score": 0.5136,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300006",
+        "name": "莱美药业",
+        "price": 6.56,
+        "buy_price": 6.56,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 19.93,
+        "amount": 1334000000.0,
+        "star": 3,
+        "score": 0.5054,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600621",
+        "name": "华鑫股份",
+        "price": 14.76,
+        "buy_price": 14.76,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 1.93,
+        "amount": 1150000000.0,
+        "star": 2,
+        "score": 0.4058,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300369",
+        "name": "绿盟科技",
+        "price": 11.13,
+        "buy_price": 11.13,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 6.71,
+        "amount": 1968000000.0,
+        "star": 1,
+        "score": 0.3226,
+        "conditions": {}
+      },
       {
         "code": "sz.300413",
         "name": "芒果超媒",
@@ -11182,24 +11353,300 @@
         "star": 1,
         "score": 0.3082,
         "conditions": {}
+      },
+      {
+        "code": "sz.002912",
+        "name": "中新赛克",
+        "price": 29.83,
+        "buy_price": 29.83,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 4.48,
+        "amount": 1065000000.0,
+        "star": 1,
+        "score": 0.1741,
+        "conditions": {}
       }
     ]
   },
   "20261013": {
-    "scan_time": "2026-10-15 16:50:35",
-    "stocks": []
+    "scan_time": "2026-10-16 16:02:20",
+    "stocks": [
+      {
+        "code": "sz.002242",
+        "name": "九阳股份",
+        "price": 17.67,
+        "buy_price": 17.67,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 6.19,
+        "amount": 2331000000.0,
+        "star": 4,
+        "score": 0.6751,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603980",
+        "name": "吉华集团",
+        "price": 10.67,
+        "buy_price": 10.67,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1011999999.9999999,
+        "star": 4,
+        "score": 0.6665,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603099",
+        "name": "长白山",
+        "price": 45.85,
+        "buy_price": 45.85,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1065000000.0,
+        "star": 4,
+        "score": 0.6262,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600693",
+        "name": "东百集团",
+        "price": 12.3,
+        "buy_price": 12.3,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.02,
+        "amount": 2057999999.9999998,
+        "star": 2,
+        "score": 0.4249,
+        "conditions": {}
+      },
+      {
+        "code": "sh.605577",
+        "name": "龙版传媒",
+        "price": 19.6,
+        "buy_price": 19.6,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.99,
+        "amount": 1116000000.0,
+        "star": 2,
+        "score": 0.3737,
+        "conditions": {}
+      },
+      {
+        "code": "sh.601595",
+        "name": "上海电影",
+        "price": 27.56,
+        "buy_price": 27.56,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 1.29,
+        "amount": 1014000000.0,
+        "star": 1,
+        "score": 0.2622,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300006",
+        "name": "莱美药业",
+        "price": 6.58,
+        "buy_price": 6.58,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 0.3,
+        "amount": 1710000000.0000002,
+        "star": 1,
+        "score": 0.2329,
+        "conditions": {}
+      }
+    ]
   },
   "20261014": {
-    "scan_time": "2026-10-15 16:56:57",
-    "stocks": []
+    "scan_time": "2026-10-16 16:03:56",
+    "stocks": [
+      {
+        "code": "sz.300299",
+        "name": "富春股份",
+        "price": 6.88,
+        "buy_price": 6.88,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 20.07,
+        "amount": 1229000000.0,
+        "star": 5,
+        "score": 0.7714,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300006",
+        "name": "莱美药业",
+        "price": 7.9,
+        "buy_price": 7.9,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 20.06,
+        "amount": 1284000000.0,
+        "star": 5,
+        "score": 0.7537,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603533",
+        "name": "掌阅科技",
+        "price": 29.92,
+        "buy_price": 29.92,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1932999999.9999998,
+        "star": 5,
+        "score": 0.7098,
+        "conditions": {}
+      },
+      {
+        "code": "sz.301052",
+        "name": "果麦文化",
+        "price": 34.06,
+        "buy_price": 34.06,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 14.49,
+        "amount": 1193000000.0,
+        "star": 2,
+        "score": 0.4748,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300107",
+        "name": "建新股份",
+        "price": 9.02,
+        "buy_price": 9.02,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 4.52,
+        "amount": 1152000000.0,
+        "star": 1,
+        "score": 0.3047,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600593",
+        "name": "大连圣亚",
+        "price": 53.1,
+        "buy_price": 53.1,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 6.56,
+        "amount": 1002999999.9999999,
+        "star": 1,
+        "score": 0.2926,
+        "conditions": {}
+      },
+      {
+        "code": "sh.605058",
+        "name": "澳弘电子",
+        "price": 64.08,
+        "buy_price": 64.08,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 6.11,
+        "amount": 1537000000.0,
+        "star": 1,
+        "score": 0.2648,
+        "conditions": {}
+      }
+    ]
   },
   "20261015": {
-    "scan_time": "2026-10-15 15:36:39",
-    "stocks": []
+    "scan_time": "2026-10-16 16:04:12",
+    "stocks": [
+      {
+        "code": "sh.601811",
+        "name": "新华文轩",
+        "price": 25.58,
+        "buy_price": 25.58,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.02,
+        "amount": 1567000000.0,
+        "star": 4,
+        "score": 0.6851,
+        "conditions": {}
+      },
+      {
+        "code": "sh.605058",
+        "name": "澳弘电子",
+        "price": 70.49,
+        "buy_price": 70.49,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1489000000.0,
+        "star": 4,
+        "score": 0.6546,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000530",
+        "name": "冰山冷热",
+        "price": 6.93,
+        "buy_price": 6.93,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1697000000.0,
+        "star": 3,
+        "score": 0.5133,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603096",
+        "name": "新经典",
+        "price": 23.25,
+        "buy_price": 23.25,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 0.78,
+        "amount": 1002000000.0,
+        "star": 2,
+        "score": 0.4337,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300006",
+        "name": "莱美药业",
+        "price": 8.13,
+        "buy_price": 8.13,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 2.91,
+        "amount": 2324000000.0,
+        "star": 1,
+        "score": 0.3533,
+        "conditions": {}
+      }
+    ]
   },
   "20261016": {
-    "scan_time": "2026-10-16 15:10:15",
+    "scan_time": "2026-10-16 16:04:28",
     "stocks": [
+      {
+        "code": "sz.000530",
+        "name": "冰山冷热",
+        "price": 7.62,
+        "buy_price": 7.62,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.96,
+        "amount": 1397000000.0,
+        "star": 5,
+        "score": 0.7688,
+        "conditions": {}
+      },
       {
         "code": "sz.300006",
         "name": "莱美药业",
@@ -11211,6 +11658,45 @@
         "amount": 3024000000.0,
         "star": 5,
         "score": 0.7228,
+        "conditions": {}
+      },
+      {
+        "code": "sh.601811",
+        "name": "新华文轩",
+        "price": 28.14,
+        "buy_price": 28.14,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.01,
+        "amount": 1666000000.0,
+        "star": 4,
+        "score": 0.6253,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300111",
+        "name": "向日葵",
+        "price": 4.03,
+        "buy_price": 4.03,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 8.63,
+        "amount": 1412000000.0,
+        "star": 2,
+        "score": 0.457,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002343",
+        "name": "慈文传媒",
+        "price": 9.33,
+        "buy_price": 9.33,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 4.71,
+        "amount": 2123000000.0,
+        "star": 2,
+        "score": 0.4331,
         "conditions": {}
       }
     ]
