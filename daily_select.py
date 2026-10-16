@@ -112,7 +112,7 @@ def _prefilter_cache_has_bad_zero_amount(cache_df: pd.DataFrame, end_date: str, 
     return False
 
 
-def prefilter_by_amount(stock_list, end_date: str, min_amount: float = 2.5e9):
+def prefilter_by_amount(stock_list, end_date: str, min_amount: float = 1.0e9):
     """对 stock_list 在 end_date 当日做成交额预筛（统一走 data_hub.api）。
     缓存：stock_data/cache/prefilter_amount_{end_date}.csv
     返回 [(code, name), ...]
@@ -410,7 +410,7 @@ def detect_today_signal(code: str, hist: pd.DataFrame, today: str):
 
 
 # ---------- 3. 主流程 ----------
-def select(today: str, min_amount: float = 2.5e9, throttle: float = 0.02):
+def select(today: str, min_amount: float = 1.0e9, throttle: float = 0.02):
     """运行选股流程，返回 DataFrame。"""
     full_list = get_stock_list()
     full_list = [(c, n) for c, n in full_list if _is_real_stock(c)]
@@ -448,7 +448,7 @@ def select(today: str, min_amount: float = 2.5e9, throttle: float = 0.02):
             # 以前 break 无条件执行：一个损坏/空的 _final 缓存会让 _amount_map
             # 留空，于是下面「成交额不足不补入」形同废止，新高榜整张表被无条件
             # 放行。2026-09-01 实测因此多补入 11 只（候选 14 而非 3），
-            # 其中最小的成交额只有 0.39 亿，远在 25 亿门槛之下。
+            # 其中最小的成交额只有 0.39 亿，远在成交额门槛之下。
             if _amount_map:
                 break
 
@@ -613,11 +613,11 @@ def refresh_tracker_report():
 def main():
     parser = argparse.ArgumentParser(description='每日选股 + 推荐星级')
     parser.add_argument('--date', default=None, help='交易日 YYYY-MM-DD，默认今日')
-    parser.add_argument('--min-amount', type=float, default=None, help='当日成交额下限，默认 25 亿')
+    parser.add_argument('--min-amount', type=float, default=None, help='当日成交额下限，默认 10 亿')
     args = parser.parse_args()
 
     today = args.date or datetime.now().strftime('%Y-%m-%d')
-    min_amount = args.min_amount if args.min_amount is not None else 2.5e9
+    min_amount = args.min_amount if args.min_amount is not None else 1.0e9
     print(f"[daily_select] {today}  min_amount={min_amount/1e8:.0f}亿")
 
     df = select(today, min_amount=min_amount)

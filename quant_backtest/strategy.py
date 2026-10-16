@@ -197,13 +197,13 @@ class MomentumBreakthroughStrategy(BaseStrategy):
     - 无固定持有天数，一直持有直到止损
     """
     
-    def __init__(self, stop_loss: float = -0.10, buy_next_day: bool = False, dedup_window: int = 10, min_amount: float = 1e9):
+    def __init__(self, stop_loss: float = -0.10, buy_next_day: bool = False, dedup_window: int = 10, min_amount: float = 0.4e9):
         """
         Args:
             stop_loss: 止损比例，默认-10%
             buy_next_day: 是否次日开盘买入，False=当日收盘买入
             dedup_window: 去重窗口（交易日），同一上涨段内只保留首次突破信号。0=关闭去重
-            min_amount: 当日最低成交额（元），默认10亿
+            min_amount: 当日最低成交额（元），默认4亿
         """
         super().__init__("动量突破策略")
         self.set_params(stop_loss=stop_loss, buy_next_day=buy_next_day,
@@ -255,8 +255,8 @@ class MomentumBreakthroughStrategy(BaseStrategy):
         # 兼容旧字段（避免 batch_scan 取 conditions 时缺字段）
         df['new_20d_high'] = df['new_100d_high']
         
-        # ========== 条件3：成交额 >= min_amount（默认 10 亿） ==========
-        min_amount = self.params.get('min_amount', 1e9)
+        # ========== 条件3：成交额 >= min_amount（默认 4 亿） ==========
+        min_amount = self.params.get('min_amount', 0.4e9)
         if 'amount' in df.columns:
             condition3 = df['amount'] >= min_amount
         else:

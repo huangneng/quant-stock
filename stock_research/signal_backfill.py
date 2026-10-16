@@ -158,7 +158,7 @@ def main():
     parser = argparse.ArgumentParser(description='历史信号样本回填')
     parser.add_argument('--days', type=int, default=60, help='回填交易日数（默认 60）')
     parser.add_argument('--end', default=None, help='结束交易日 YYYY-MM-DD（默认今日）')
-    parser.add_argument('--min-amount', type=float, default=3e9, help='预筛成交额下限')
+    parser.add_argument('--min-amount', type=float, default=1.2e9, help='预筛成交额下限（默认 12 亿）')
     parser.add_argument('--force', action='store_true', help='忽略已存在分片，强制重跑')
     args = parser.parse_args()
 
