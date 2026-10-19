@@ -11700,5 +11700,75 @@
         "conditions": {}
       }
     ]
+  },
+  "20261019": {
+    "scan_time": "2026-10-19 15:10:24",
+    "stocks": [
+      {
+        "code": "sz.002343",
+        "name": "慈文传媒",
+        "price": 10.26,
+        "buy_price": 10.26,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.97,
+        "amount": 2101000000.0000002,
+        "star": 5,
+        "score": 0.7537,
+        "conditions": {}
+      },
+      {
+        "code": "sh.605058",
+        "name": "澳弘电子",
+        "price": 72.41,
+        "buy_price": 72.41,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1650000000.0,
+        "star": 3,
+        "score": 0.5585,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600825",
+        "name": "新华传媒",
+        "price": 15.58,
+        "buy_price": 15.58,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 2.77,
+        "amount": 3996000000.0,
+        "star": 3,
+        "score": 0.5053,
+        "conditions": {}
+      },
+      {
+        "code": "sz.301190",
+        "name": "善水科技",
+        "price": 53.8,
+        "buy_price": 53.8,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 15.97,
+        "amount": 1142000000.0,
+        "star": 2,
+        "score": 0.4839,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000530",
+        "name": "冰山冷热",
+        "price": 7.8,
+        "buy_price": 7.8,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 2.36,
+        "amount": 2073999999.9999998,
+        "star": 2,
+        "score": 0.4748,
+        "conditions": {}
+      }
+    ]
   }
 }
