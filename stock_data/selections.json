@@ -11770,5 +11770,49 @@
         "conditions": {}
       }
     ]
+  },
+  "20261020": {
+    "scan_time": "2026-10-20 16:21:50",
+    "stocks": [
+      {
+        "code": "sz.002242",
+        "name": "九阳股份",
+        "price": 20.56,
+        "buy_price": 20.56,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.01,
+        "amount": 2391000000.0,
+        "star": 4,
+        "score": 0.6396,
+        "conditions": {}
+      },
+      {
+        "code": "sh.688018",
+        "name": "乐鑫科技",
+        "price": 140.72,
+        "buy_price": 140.72,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 16.86,
+        "amount": 2458000000.0,
+        "star": 3,
+        "score": 0.5623,
+        "conditions": {}
+      },
+      {
+        "code": "sz.003029",
+        "name": "吉大正元",
+        "price": 26.61,
+        "buy_price": 26.61,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1124000000.0,
+        "star": 2,
+        "score": 0.4897,
+        "conditions": {}
+      }
+    ]
   }
 }
