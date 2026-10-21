@@ -11814,5 +11814,75 @@
         "conditions": {}
       }
     ]
+  },
+  "20261021": {
+    "scan_time": "2026-10-21 16:55:54",
+    "stocks": [
+      {
+        "code": "sh.603236",
+        "name": "移远通信",
+        "price": 83.72,
+        "buy_price": 83.72,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 4448000000.0,
+        "star": 5,
+        "score": 0.6968,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002242",
+        "name": "九阳股份",
+        "price": 22.62,
+        "buy_price": 22.62,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.02,
+        "amount": 3089000000.0,
+        "star": 4,
+        "score": 0.6794,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600825",
+        "name": "新华传媒",
+        "price": 16.17,
+        "buy_price": 16.17,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 6.45,
+        "amount": 2944000000.0,
+        "star": 3,
+        "score": 0.5349,
+        "conditions": {}
+      },
+      {
+        "code": "sh.688018",
+        "name": "乐鑫科技",
+        "price": 145.86,
+        "buy_price": 145.86,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 3.65,
+        "amount": 2428000000.0,
+        "star": 2,
+        "score": 0.4,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300244",
+        "name": "迪安诊断",
+        "price": 22.55,
+        "buy_price": 22.55,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 3.49,
+        "amount": 2191000000.0,
+        "star": 2,
+        "score": 0.3685,
+        "conditions": {}
+      }
+    ]
   }
 }
