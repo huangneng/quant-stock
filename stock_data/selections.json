@@ -11884,5 +11884,36 @@
         "conditions": {}
       }
     ]
+  },
+  "20261022": {
+    "scan_time": "2026-10-22 15:10:21",
+    "stocks": [
+      {
+        "code": "sz.000530",
+        "name": "冰山冷热",
+        "price": 9.49,
+        "buy_price": 9.49,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.97,
+        "amount": 2552000000.0,
+        "star": 5,
+        "score": 0.6901,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002724",
+        "name": "海洋王",
+        "price": 11.21,
+        "buy_price": 11.21,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.01,
+        "amount": 1271000000.0,
+        "star": 3,
+        "score": 0.5161,
+        "conditions": {}
+      }
+    ]
   }
 }
