@@ -11915,5 +11915,88 @@
         "conditions": {}
       }
     ]
+  },
+  "20261023": {
+    "scan_time": "2026-10-23 15:10:55",
+    "stocks": [
+      {
+        "code": "sh.603278",
+        "name": "大业股份",
+        "price": 15.96,
+        "buy_price": 15.96,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.99,
+        "amount": 1664000000.0,
+        "star": 5,
+        "score": 0.7926,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300307",
+        "name": "慈星股份",
+        "price": 8.94,
+        "buy_price": 8.94,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 20.0,
+        "amount": 1064000000.0,
+        "star": 5,
+        "score": 0.7672,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002724",
+        "name": "海洋王",
+        "price": 12.33,
+        "buy_price": 12.33,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.99,
+        "amount": 1727000000.0,
+        "star": 5,
+        "score": 0.7653,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002343",
+        "name": "慈文传媒",
+        "price": 10.89,
+        "buy_price": 10.89,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 2123999999.9999998,
+        "star": 5,
+        "score": 0.7153,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000530",
+        "name": "冰山冷热",
+        "price": 9.53,
+        "buy_price": 9.53,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 0.42,
+        "amount": 2110000000.0000002,
+        "star": 4,
+        "score": 0.6363,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300378",
+        "name": "鼎捷数智",
+        "price": 43.92,
+        "buy_price": 43.92,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 13.72,
+        "amount": 1848999999.9999998,
+        "star": 3,
+        "score": 0.5454,
+        "conditions": {}
+      }
+    ]
   }
 }
