@@ -11998,5 +11998,75 @@
         "conditions": {}
       }
     ]
+  },
+  "20261026": {
+    "scan_time": "2026-10-26 15:10:43",
+    "stocks": [
+      {
+        "code": "sh.603278",
+        "name": "大业股份",
+        "price": 17.25,
+        "buy_price": 17.25,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 8.08,
+        "amount": 2265000000.0,
+        "star": 3,
+        "score": 0.522,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000678",
+        "name": "襄阳轴承",
+        "price": 14.55,
+        "buy_price": 14.55,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.98,
+        "amount": 1275000000.0,
+        "star": 3,
+        "score": 0.5023,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300307",
+        "name": "慈星股份",
+        "price": 9.37,
+        "buy_price": 9.37,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 4.81,
+        "amount": 1698999999.9999998,
+        "star": 2,
+        "score": 0.3676,
+        "conditions": {}
+      },
+      {
+        "code": "sh.688071",
+        "name": "华依科技",
+        "price": 53.14,
+        "buy_price": 53.14,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 11.83,
+        "amount": 1376000000.0,
+        "star": 1,
+        "score": 0.2795,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300369",
+        "name": "绿盟科技",
+        "price": 11.85,
+        "buy_price": 11.85,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 1.2,
+        "amount": 2060000000.0000002,
+        "star": 1,
+        "score": 0.212,
+        "conditions": {}
+      }
+    ]
   }
 }
