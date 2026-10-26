@@ -30,10 +30,26 @@
         }
         .container { max-width: 1200px; margin: 0 auto; }
         .header {
+            position: relative;
             border-bottom: 1px solid var(--border);
             padding-bottom: 20px;
             margin-bottom: 30px;
+            padding-right: 150px;
         }
+        .mkt-score {
+            position: absolute;
+            top: 0;
+            right: 0;
+            text-align: center;
+            min-width: 120px;
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.03);
+        }
+        .mkt-label { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; }
+        .mkt-val { font-size: 24px; font-weight: 800; line-height: 1.15; }
+        .mkt-sub { font-size: 9px; color: var(--text-muted); }
         .header h1 {
             font-size: 20px;
             font-weight: 600;
@@ -285,8 +301,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="meta">策略跟踪：突破时买入，回撤10%止损或者创新高后高点回撤10%止盈。不构成投资建议，投资有风险，自己理性把握。 | 更新: 2026-10-26 15:10:53</div>
-            <div style="color:#ff4444;font-weight:700;font-size:14px;text-align:left;padding:6px 0;letter-spacing:0.5px;">注意关注数据更新日期，最近突破股票很少，建议不要做，市场风险巨大。</div>
+            <div class="mkt-score" title="基于最新交易日 2026-10-26 全市场：涨 2076 / 跌 2966，大涨≥9.5% 76 / 大跌≤-9.5% 53（共 5186 只）。分数=0.6×(涨-跌)/家数+0.4×clip((大涨-大跌)/40)，范围 -1~+1，越高越适合突破策略。"><div class="mkt-label">市场活跃度</div><div class="mkt-val" style="color:var(--yellow)">+0.13</div><div class="mkt-sub">突破策略赚钱概率</div></div>
+            <div class="meta">策略跟踪：突破时买入，回撤10%止损或者创新高后高点回撤10%止盈。不构成投资建议，投资有风险，自己理性把握。 | 更新: 2026-10-26 15:56:49</div>
+            <div style="color:#ff4444;font-weight:700;font-size:14px;text-align:left;padding:6px 0;letter-spacing:0.5px;">突破策略不适用于当前市场，空仓观望！</div>
         </div>
         <div class="stock-table">
             <div class="stock-header">

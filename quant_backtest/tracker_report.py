@@ -840,6 +840,37 @@ def _render_near_breakout_rows(rows: list) -> str:
     return ''.join(out)
 
 
+def _market_activity_score():
+    """基于最新交易日全市场宽度，给一个 [-1,1] 的市场活跃度分，
+    表征当前环境用突破策略赚钱的概率（+1 最适配、-1 最不利）。
+    纯用 KlineDB 最新交易日数据，随每日同步自动更新，不联网。
+    返回 (score, detail_dict) 或 (None, None)。"""
+    try:
+        from data_hub.store.kline_db import KlineDB
+        db = KlineDB()
+        with db._conn() as c:
+            d = c.execute("SELECT MAX(date) FROM kline").fetchone()[0]
+            rows = c.execute(
+                "SELECT pctChg FROM kline WHERE date=? AND close>0 AND amount>0 "
+                "AND code NOT LIKE 'sh.000%' AND code NOT LIKE 'sh.880%' "
+                "AND code NOT LIKE 'sz.399%'", (d,)).fetchall()
+        pct = [r[0] for r in rows if r[0] is not None]
+        n = len(pct)
+        if n < 100:
+            return None, None
+        up = sum(1 for x in pct if x > 0)
+        down = sum(1 for x in pct if x < 0)
+        lu = sum(1 for x in pct if x >= 9.5)
+        ld = sum(1 for x in pct if x <= -9.5)
+        breadth = (up - down) / n
+        limit_tilt = max(-1.0, min(1.0, (lu - ld) / 40.0))
+        score = max(-1.0, min(1.0, 0.6 * breadth + 0.4 * limit_tilt))
+        return round(score, 2), {'date': d, 'up': up, 'down': down,
+                                 'lu': lu, 'ld': ld, 'n': n}
+    except Exception:
+        return None, None
+
+
 def generate_index_page(output_dir):
     """生成总览页 - 合并为单一表格，日期作为列"""
     from data_hub import api as hub
@@ -1210,6 +1241,27 @@ def generate_index_page(output_dir):
     watch_rows = _render_near_breakout_rows(watch_rows_data)
     watch_count = len(watch_rows_data)
 
+    mkt_score, mkt_detail = _market_activity_score()
+    if mkt_score is None:
+        market_badge = ''
+    else:
+        if mkt_score >= 0.3:
+            _mc = 'var(--green)'
+        elif mkt_score <= -0.3:
+            _mc = '#ff4444'
+        else:
+            _mc = 'var(--yellow)'
+        _d = mkt_detail
+        _tip = (f"基于最新交易日 {_d['date']} 全市场：涨 {_d['up']} / 跌 {_d['down']}，"
+                f"大涨≥9.5% {_d['lu']} / 大跌≤-9.5% {_d['ld']}（共 {_d['n']} 只）。"
+                f"分数=0.6×(涨-跌)/家数+0.4×clip((大涨-大跌)/40)，范围 -1~+1，越高越适合突破策略。")
+        market_badge = (
+            '<div class="mkt-score" title="' + _tip + '">'
+            '<div class="mkt-label">市场活跃度</div>'
+            '<div class="mkt-val" style="color:' + _mc + '">' + f'{mkt_score:+.2f}' + '</div>'
+            '<div class="mkt-sub">突破策略赚钱概率</div></div>'
+        )
+
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -1242,10 +1294,26 @@ def generate_index_page(output_dir):
         }}
         .container {{ max-width: 1200px; margin: 0 auto; }}
         .header {{
+            position: relative;
             border-bottom: 1px solid var(--border);
             padding-bottom: 20px;
             margin-bottom: 30px;
+            padding-right: 150px;
         }}
+        .mkt-score {{
+            position: absolute;
+            top: 0;
+            right: 0;
+            text-align: center;
+            min-width: 120px;
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.03);
+        }}
+        .mkt-label {{ font-size: 10px; color: var(--text-muted); letter-spacing: 1px; }}
+        .mkt-val {{ font-size: 24px; font-weight: 800; line-height: 1.15; }}
+        .mkt-sub {{ font-size: 9px; color: var(--text-muted); }}
         .header h1 {{
             font-size: 20px;
             font-weight: 600;
@@ -1497,8 +1565,9 @@ def generate_index_page(output_dir):
 <body>
     <div class="container">
         <div class="header">
+            {market_badge}
             <div class="meta">策略跟踪：突破时买入，回撤10%止损或者创新高后高点回撤10%止盈。不构成投资建议，投资有风险，自己理性把握。 | 更新: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
-            <div style="color:#ff4444;font-weight:700;font-size:14px;text-align:left;padding:6px 0;letter-spacing:0.5px;">注意关注数据更新日期，最近突破股票很少，建议不要做，市场风险巨大。</div>
+            <div style="color:#ff4444;font-weight:700;font-size:14px;text-align:left;padding:6px 0;letter-spacing:0.5px;">突破策略不适用于当前市场，空仓观望！</div>
         </div>
         <div class="stock-table">
             <div class="stock-header">
