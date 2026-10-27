@@ -12068,5 +12068,49 @@
         "conditions": {}
       }
     ]
+  },
+  "20261027": {
+    "scan_time": "2026-10-27 15:12:17",
+    "stocks": [
+      {
+        "code": "sz.002724",
+        "name": "海洋王",
+        "price": 13.09,
+        "buy_price": 13.09,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 2089999999.9999998,
+        "star": 5,
+        "score": 0.728,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000678",
+        "name": "襄阳轴承",
+        "price": 16.01,
+        "buy_price": 16.01,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.03,
+        "amount": 1492000000.0,
+        "star": 3,
+        "score": 0.558,
+        "conditions": {}
+      },
+      {
+        "code": "sh.605488",
+        "name": "福莱新材",
+        "price": 44.19,
+        "buy_price": 44.19,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 5.29,
+        "amount": 2374000000.0,
+        "star": 2,
+        "score": 0.3707,
+        "conditions": {}
+      }
+    ]
   }
 }
