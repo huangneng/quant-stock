@@ -12112,5 +12112,127 @@
         "conditions": {}
       }
     ]
+  },
+  "20261028": {
+    "scan_time": "2026-10-28 15:24:26",
+    "stocks": [
+      {
+        "code": "sh.603337",
+        "name": "杰克科技",
+        "price": 48.83,
+        "buy_price": 48.83,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1598000000.0,
+        "star": 5,
+        "score": 0.7688,
+        "conditions": {}
+      },
+      {
+        "code": "sh.605488",
+        "name": "福莱新材",
+        "price": 48.61,
+        "buy_price": 48.61,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 2445000000.0,
+        "star": 5,
+        "score": 0.7289,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300006",
+        "name": "莱美药业",
+        "price": 9.92,
+        "buy_price": 9.92,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 19.95,
+        "amount": 2568000000.0,
+        "star": 4,
+        "score": 0.6468,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002724",
+        "name": "海洋王",
+        "price": 13.4,
+        "buy_price": 13.4,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 2.37,
+        "amount": 1766000000.0,
+        "star": 3,
+        "score": 0.5981,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603626",
+        "name": "科森科技",
+        "price": 27.83,
+        "buy_price": 27.83,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1409000000.0,
+        "star": 3,
+        "score": 0.5613,
+        "conditions": {}
+      },
+      {
+        "code": "sz.301428",
+        "name": "世纪恒通",
+        "price": 42.71,
+        "buy_price": 42.71,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 14.01,
+        "amount": 1485000000.0,
+        "star": 2,
+        "score": 0.4669,
+        "conditions": {}
+      },
+      {
+        "code": "sz.301529",
+        "name": "福赛科技",
+        "price": 169.0,
+        "buy_price": 169.0,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 14.82,
+        "amount": 1311000000.0,
+        "star": 2,
+        "score": 0.3784,
+        "conditions": {}
+      },
+      {
+        "code": "sz.301550",
+        "name": "斯菱智驱",
+        "price": 133.39,
+        "buy_price": 133.39,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 13.81,
+        "amount": 2297000000.0,
+        "star": 1,
+        "score": 0.3136,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600838",
+        "name": "上海九百",
+        "price": 13.99,
+        "buy_price": 13.99,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 5.11,
+        "amount": 2149000000.0,
+        "star": 1,
+        "score": 0.3119,
+        "conditions": {}
+      }
+    ]
   }
 }
