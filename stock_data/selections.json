@@ -12238,5 +12238,88 @@
   "20261029": {
     "scan_time": "2026-10-29 18:31:39",
     "stocks": []
+  },
+  "20261030": {
+    "scan_time": "2026-10-30 18:29:02",
+    "stocks": [
+      {
+        "code": "sz.002086",
+        "name": "东方海洋",
+        "price": 2.83,
+        "buy_price": 2.83,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.12,
+        "amount": 1190000000.0,
+        "star": 3,
+        "score": 0.5885,
+        "conditions": {}
+      },
+      {
+        "code": "sh.601919",
+        "name": "中远海控",
+        "price": 17.84,
+        "buy_price": 17.84,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 7.02,
+        "amount": 3679999999.9999995,
+        "star": 3,
+        "score": 0.5835,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002164",
+        "name": "宁波东力",
+        "price": 19.03,
+        "buy_price": 19.03,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 5.78,
+        "amount": 1942000000.0000002,
+        "star": 2,
+        "score": 0.3604,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002708",
+        "name": "光洋股份",
+        "price": 19.02,
+        "buy_price": 19.02,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": -8.69,
+        "amount": 3264000000.0,
+        "star": 1,
+        "score": 0.3179,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000678",
+        "name": "襄阳轴承",
+        "price": 18.08,
+        "buy_price": 18.08,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": -3.57,
+        "amount": 3225000000.0,
+        "star": 1,
+        "score": 0.1932,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300006",
+        "name": "莱美药业",
+        "price": 9.93,
+        "buy_price": 9.93,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": -5.25,
+        "amount": 2880000000.0,
+        "star": 1,
+        "score": 0.1301,
+        "conditions": {}
+      }
+    ]
   }
 }
