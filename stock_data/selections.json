@@ -12321,5 +12321,75 @@
         "conditions": {}
       }
     ]
+  },
+  "20261102": {
+    "scan_time": "2026-11-02 15:10:28",
+    "stocks": [
+      {
+        "code": "sz.000678",
+        "name": "襄阳轴承",
+        "price": 19.89,
+        "buy_price": 19.89,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.01,
+        "amount": 2896000000.0,
+        "star": 5,
+        "score": 0.7171,
+        "conditions": {}
+      },
+      {
+        "code": "sz.301218",
+        "name": "华是科技",
+        "price": 81.44,
+        "buy_price": 81.44,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 19.99,
+        "amount": 1188000000.0,
+        "star": 4,
+        "score": 0.6379,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603198",
+        "name": "迎驾贡酒",
+        "price": 48.53,
+        "buy_price": 48.53,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 9.13,
+        "amount": 1201000000.0,
+        "star": 4,
+        "score": 0.6148,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000410",
+        "name": "沈阳机床",
+        "price": 5.91,
+        "buy_price": 5.91,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.06,
+        "amount": 1206000000.0,
+        "star": 3,
+        "score": 0.5745,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002172",
+        "name": "澳洋健康",
+        "price": 6.5,
+        "buy_price": 6.5,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.98,
+        "amount": 1224000000.0,
+        "star": 3,
+        "score": 0.548,
+        "conditions": {}
+      }
+    ]
   }
 }
