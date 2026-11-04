@@ -12500,5 +12500,36 @@
         "conditions": {}
       }
     ]
+  },
+  "20261104": {
+    "scan_time": "2026-11-04 15:12:58",
+    "stocks": [
+      {
+        "code": "sz.300426",
+        "name": "华智数媒",
+        "price": 10.35,
+        "buy_price": 10.35,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 15.0,
+        "amount": 1119000000.0,
+        "star": 3,
+        "score": 0.5944,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300315",
+        "name": "掌趣科技",
+        "price": 5.0,
+        "buy_price": 5.0,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 13.12,
+        "amount": 2233000000.0,
+        "star": 3,
+        "score": 0.5862,
+        "conditions": {}
+      }
+    ]
   }
 }
