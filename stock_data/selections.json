@@ -12535,5 +12535,62 @@
   "20261105": {
     "scan_time": "2026-11-05 18:26:48",
     "stocks": []
+  },
+  "20261106": {
+    "scan_time": "2026-11-06 15:10:26",
+    "stocks": [
+      {
+        "code": "sz.002086",
+        "name": "东方海洋",
+        "price": 3.97,
+        "buy_price": 3.97,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.97,
+        "amount": 2576000000.0,
+        "star": 4,
+        "score": 0.6781,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600261",
+        "name": "阳光照明",
+        "price": 5.4,
+        "buy_price": 5.4,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.98,
+        "amount": 1275000000.0,
+        "star": 3,
+        "score": 0.6009,
+        "conditions": {}
+      },
+      {
+        "code": "sh.601599",
+        "name": "浙文影业",
+        "price": 5.08,
+        "buy_price": 5.08,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.96,
+        "amount": 1295000000.0,
+        "star": 3,
+        "score": 0.5265,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002275",
+        "name": "桂林三金",
+        "price": 18.2,
+        "buy_price": 18.2,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 3.64,
+        "amount": 1291000000.0,
+        "star": 1,
+        "score": 0.2683,
+        "conditions": {}
+      }
+    ]
   }
 }
