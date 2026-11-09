@@ -12592,5 +12592,101 @@
         "conditions": {}
       }
     ]
+  },
+  "20261109": {
+    "scan_time": "2026-11-09 15:10:23",
+    "stocks": [
+      {
+        "code": "sh.601599",
+        "name": "浙文影业",
+        "price": 5.38,
+        "buy_price": 5.38,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 5.91,
+        "amount": 2647000000.0,
+        "star": 5,
+        "score": 0.7332,
+        "conditions": {}
+      },
+      {
+        "code": "sh.688585",
+        "name": "上纬新材",
+        "price": 216.02,
+        "buy_price": 216.02,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 20.0,
+        "amount": 3325000000.0,
+        "star": 4,
+        "score": 0.6682,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000525",
+        "name": "红太阳",
+        "price": 5.52,
+        "buy_price": 5.52,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.96,
+        "amount": 1190000000.0,
+        "star": 4,
+        "score": 0.6311,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002086",
+        "name": "东方海洋",
+        "price": 4.37,
+        "buy_price": 4.37,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.08,
+        "amount": 3180000000.0,
+        "star": 3,
+        "score": 0.5859,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002708",
+        "name": "光洋股份",
+        "price": 21.97,
+        "buy_price": 21.97,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.02,
+        "amount": 1630000000.0,
+        "star": 3,
+        "score": 0.5016,
+        "conditions": {}
+      },
+      {
+        "code": "sh.601595",
+        "name": "上海电影",
+        "price": 38.7,
+        "buy_price": 38.7,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 8.22,
+        "amount": 1215000000.0,
+        "star": 2,
+        "score": 0.4818,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300473",
+        "name": "德尔股份",
+        "price": 47.88,
+        "buy_price": 47.88,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 12.63,
+        "amount": 1094000000.0,
+        "star": 2,
+        "score": 0.4239,
+        "conditions": {}
+      }
+    ]
   }
 }
