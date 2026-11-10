@@ -12688,5 +12688,153 @@
         "conditions": {}
       }
     ]
+  },
+  "20261110": {
+    "scan_time": "2026-11-10 16:39:36",
+    "stocks": [
+      {
+        "code": "sz.300426",
+        "name": "华智数媒",
+        "price": 11.47,
+        "buy_price": 11.47,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 19.98,
+        "amount": 1150000000.0,
+        "star": 4,
+        "score": 0.6714,
+        "conditions": {}
+      },
+      {
+        "code": "sh.601595",
+        "name": "上海电影",
+        "price": 42.57,
+        "buy_price": 42.57,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1048000000.0,
+        "star": 4,
+        "score": 0.6681,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002578",
+        "name": "闽发铝业",
+        "price": 6.06,
+        "buy_price": 6.06,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.98,
+        "amount": 1922000000.0,
+        "star": 4,
+        "score": 0.649,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002086",
+        "name": "东方海洋",
+        "price": 4.62,
+        "buy_price": 4.62,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 5.72,
+        "amount": 2790000000.0,
+        "star": 3,
+        "score": 0.5289,
+        "conditions": {}
+      },
+      {
+        "code": "sh.605488",
+        "name": "福莱新材",
+        "price": 57.3,
+        "buy_price": 57.3,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1282000000.0,
+        "star": 3,
+        "score": 0.5206,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603893",
+        "name": "瑞芯微",
+        "price": 233.2,
+        "buy_price": 233.2,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 4145000000.0000005,
+        "star": 3,
+        "score": 0.5019,
+        "conditions": {}
+      },
+      {
+        "code": "sh.601188",
+        "name": "龙江交通",
+        "price": 4.61,
+        "buy_price": 4.61,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.02,
+        "amount": 1926000000.0000002,
+        "star": 2,
+        "score": 0.4928,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300133",
+        "name": "华策影视",
+        "price": 11.29,
+        "buy_price": 11.29,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 16.39,
+        "amount": 3669000000.0,
+        "star": 2,
+        "score": 0.4638,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000530",
+        "name": "冰山冷热",
+        "price": 10.53,
+        "buy_price": 10.53,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.03,
+        "amount": 1533000000.0,
+        "star": 1,
+        "score": 0.3424,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603626",
+        "name": "科森科技",
+        "price": 30.6,
+        "buy_price": 30.6,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 5.59,
+        "amount": 1394000000.0,
+        "star": 1,
+        "score": 0.2024,
+        "conditions": {}
+      },
+      {
+        "code": "sh.688585",
+        "name": "上纬新材",
+        "price": 218.86,
+        "buy_price": 218.86,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 1.31,
+        "amount": 3529000000.0,
+        "star": 1,
+        "score": 0.1771,
+        "conditions": {}
+      }
+    ]
   }
 }
