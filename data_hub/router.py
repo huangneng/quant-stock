@@ -379,11 +379,22 @@ class Router:
         ]
 
     def _ensure_login(self, src, attr: Optional[str]) -> bool:
-        """按需登录并缓存登录态；无需登录的源直接返回 True。"""
+        """按需登录并缓存登录态；无需登录的源直接返回 True。
+
+        登录套 _CallTimeout：baostock 是自实现 socket 协议，上游不通/被限流时
+        login() 可能永久阻塞（2026-11-10 定时任务的 daily_select 因此挂死 1.5h）。
+        _CallTimeout 罩不到这里，登录挂起会连带 _fetch_kline_online 一起卡死。
+        """
         if attr is None:
             return True
         if not getattr(self, attr):
-            setattr(self, attr, _try_login(src))
+            try:
+                with _CallTimeout(self.source_call_timeout_s * 3):
+                    logged_in = _try_login(src)
+            except SourceCallTimeout:
+                print(f"  [{type(src).__name__}] login 超时（>{self.source_call_timeout_s * 3:g}s），跳过该源")
+                logged_in = False
+            setattr(self, attr, logged_in)
         return getattr(self, attr)
 
     def _throttle_for(self, name: str) -> _Throttle:
