@@ -13075,5 +13075,101 @@
         "conditions": {}
       }
     ]
+  },
+  "20261112": {
+    "scan_time": "2026-11-12 21:06:36",
+    "stocks": [
+      {
+        "code": "sh.600802",
+        "name": "福建水泥",
+        "price": 8.59,
+        "buy_price": 8.59,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.99,
+        "amount": 1688000000.0,
+        "star": 5,
+        "score": 0.7092,
+        "conditions": {}
+      },
+      {
+        "code": "sh.601188",
+        "name": "龙江交通",
+        "price": 4.72,
+        "buy_price": 4.72,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.02,
+        "amount": 1554000000.0,
+        "star": 4,
+        "score": 0.6799,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603366",
+        "name": "日出东方",
+        "price": 13.17,
+        "buy_price": 13.17,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.03,
+        "amount": 2105000000.0,
+        "star": 4,
+        "score": 0.6539,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000026",
+        "name": "飞亚达",
+        "price": 24.34,
+        "buy_price": 24.34,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 5.09,
+        "amount": 1573000000.0,
+        "star": 2,
+        "score": 0.4311,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002086",
+        "name": "东方海洋",
+        "price": 5.16,
+        "buy_price": 5.16,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.02,
+        "amount": 2851000000.0,
+        "star": 2,
+        "score": 0.4303,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002164",
+        "name": "宁波东力",
+        "price": 23.52,
+        "buy_price": 23.52,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 7.35,
+        "amount": 2568000000.0,
+        "star": 1,
+        "score": 0.2731,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000678",
+        "name": "襄阳轴承",
+        "price": 21.94,
+        "buy_price": 21.94,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 3.54,
+        "amount": 3954000000.0,
+        "star": 1,
+        "score": 0.2666,
+        "conditions": {}
+      }
+    ]
   }
 }
