@@ -13228,5 +13228,62 @@
         "conditions": {}
       }
     ]
+  },
+  "20261116": {
+    "scan_time": "2026-11-16 15:10:26",
+    "stocks": [
+      {
+        "code": "sh.601188",
+        "name": "龙江交通",
+        "price": 4.73,
+        "buy_price": 4.73,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1011999999.9999999,
+        "star": 3,
+        "score": 0.5424,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002148",
+        "name": "北纬科技",
+        "price": 8.75,
+        "buy_price": 8.75,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.06,
+        "amount": 1653000000.0,
+        "star": 3,
+        "score": 0.5283,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600715",
+        "name": "文投控股",
+        "price": 3.74,
+        "buy_price": 3.74,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 3957000000.0,
+        "star": 3,
+        "score": 0.5167,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002242",
+        "name": "九阳股份",
+        "price": 28.65,
+        "buy_price": 28.65,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 7.1,
+        "amount": 4047000000.0,
+        "star": 2,
+        "score": 0.4455,
+        "conditions": {}
+      }
+    ]
   }
 }
