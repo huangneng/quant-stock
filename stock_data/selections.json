@@ -13285,5 +13285,62 @@
         "conditions": {}
       }
     ]
+  },
+  "20261117": {
+    "scan_time": "2026-11-17 15:36:26",
+    "stocks": [
+      {
+        "code": "sz.002242",
+        "name": "九阳股份",
+        "price": 31.52,
+        "buy_price": 31.52,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.02,
+        "amount": 3544000000.0,
+        "star": 4,
+        "score": 0.6602,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002187",
+        "name": "广百股份",
+        "price": 8.1,
+        "buy_price": 8.1,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 5.61,
+        "amount": 1651000000.0000002,
+        "star": 2,
+        "score": 0.4942,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002425",
+        "name": "凯撒文化",
+        "price": 4.65,
+        "buy_price": 4.65,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 6.65,
+        "amount": 1820000000.0,
+        "star": 2,
+        "score": 0.479,
+        "conditions": {}
+      },
+      {
+        "code": "sh.601188",
+        "name": "龙江交通",
+        "price": 4.74,
+        "buy_price": 4.74,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 0.21,
+        "amount": 1827000000.0,
+        "star": 1,
+        "score": 0.1432,
+        "conditions": {}
+      }
+    ]
   }
 }
