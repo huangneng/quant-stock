@@ -13386,5 +13386,36 @@
         "conditions": {}
       }
     ]
+  },
+  "20261119": {
+    "scan_time": "2026-11-19 15:10:24",
+    "stocks": [
+      {
+        "code": "sz.002685",
+        "name": "华东重机",
+        "price": 7.67,
+        "buy_price": 7.67,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 4.07,
+        "amount": 4067000000.0,
+        "star": 2,
+        "score": 0.4427,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002148",
+        "name": "北纬科技",
+        "price": 9.3,
+        "buy_price": 9.3,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 4.26,
+        "amount": 2053000000.0,
+        "star": 2,
+        "score": 0.3793,
+        "conditions": {}
+      }
+    ]
   }
 }
