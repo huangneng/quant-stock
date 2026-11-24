@@ -13491,5 +13491,88 @@
         "conditions": {}
       }
     ]
+  },
+  "20261124": {
+    "scan_time": "2026-11-24 18:55:43",
+    "stocks": [
+      {
+        "code": "sz.301413",
+        "name": "安培龙",
+        "price": 89.71,
+        "buy_price": 89.71,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 20.0,
+        "amount": 1617000000.0000002,
+        "star": 4,
+        "score": 0.6303,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002685",
+        "name": "华东重机",
+        "price": 8.95,
+        "buy_price": 8.95,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.95,
+        "amount": 4292000000.0,
+        "star": 4,
+        "score": 0.6184,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600467",
+        "name": "好当家",
+        "price": 3.27,
+        "buy_price": 3.27,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 3.81,
+        "amount": 1446000000.0,
+        "star": 2,
+        "score": 0.4641,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002242",
+        "name": "九阳股份",
+        "price": 35.05,
+        "buy_price": 35.05,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.01,
+        "amount": 1143000000.0,
+        "star": 2,
+        "score": 0.4071,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002148",
+        "name": "北纬科技",
+        "price": 11.41,
+        "buy_price": 11.41,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 3.07,
+        "amount": 2642000000.0,
+        "star": 1,
+        "score": 0.3534,
+        "conditions": {}
+      },
+      {
+        "code": "sz.301313",
+        "name": "凡拓数创",
+        "price": 82.8,
+        "buy_price": 82.8,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 16.64,
+        "amount": 2859000000.0,
+        "star": 1,
+        "score": 0.3242,
+        "conditions": {}
+      }
+    ]
   }
 }
