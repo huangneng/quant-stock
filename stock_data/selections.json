@@ -13727,5 +13727,127 @@
         "conditions": {}
       }
     ]
+  },
+  "20261127": {
+    "scan_time": "2026-11-27 15:10:16",
+    "stocks": [
+      {
+        "code": "sz.300324",
+        "name": "旋极信息",
+        "price": 6.05,
+        "buy_price": 6.05,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 20.04,
+        "amount": 3048000000.0,
+        "star": 5,
+        "score": 0.7583,
+        "conditions": {}
+      },
+      {
+        "code": "sz.301391",
+        "name": "卡莱特",
+        "price": 68.8,
+        "buy_price": 68.8,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 20.01,
+        "amount": 1038000000.0000001,
+        "star": 5,
+        "score": 0.7104,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002122",
+        "name": "汇洲智能",
+        "price": 4.18,
+        "buy_price": 4.18,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1398000000.0,
+        "star": 5,
+        "score": 0.7093,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002642",
+        "name": "荣联科技",
+        "price": 9.16,
+        "buy_price": 9.16,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 9.96,
+        "amount": 1058000000.0,
+        "star": 5,
+        "score": 0.7047,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603960",
+        "name": "克来机电",
+        "price": 22.51,
+        "buy_price": 22.51,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.02,
+        "amount": 1328000000.0,
+        "star": 5,
+        "score": 0.7044,
+        "conditions": {}
+      },
+      {
+        "code": "sz.300363",
+        "name": "博腾股份",
+        "price": 27.6,
+        "buy_price": 27.6,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 20.0,
+        "amount": 1063000000.0000001,
+        "star": 5,
+        "score": 0.6904,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600410",
+        "name": "华胜天成",
+        "price": 20.9,
+        "buy_price": 20.9,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 5556000000.0,
+        "star": 4,
+        "score": 0.6579,
+        "conditions": {}
+      },
+      {
+        "code": "sz.301413",
+        "name": "安培龙",
+        "price": 93.9,
+        "buy_price": 93.9,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 16.99,
+        "amount": 1857999999.9999998,
+        "star": 2,
+        "score": 0.4745,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600814",
+        "name": "杭州解百",
+        "price": 9.53,
+        "buy_price": 9.53,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 3.7,
+        "amount": 1439000000.0,
+        "star": 1,
+        "score": 0.3414,
+        "conditions": {}
+      }
+    ]
   }
 }
