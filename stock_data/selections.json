@@ -13574,5 +13574,158 @@
         "conditions": {}
       }
     ]
+  },
+  "20261125": {
+    "scan_time": "2026-11-27 09:33:15",
+    "stocks": [
+      {
+        "code": "sz.002685",
+        "name": "华东重机",
+        "price": 8.99,
+        "buy_price": 8.99,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 0.45,
+        "amount": 3561000000.0,
+        "star": 3,
+        "score": 0.5121,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000530",
+        "name": "冰山冷热",
+        "price": 14.7,
+        "buy_price": 14.7,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 9.54,
+        "amount": 3300000000.0,
+        "star": 2,
+        "score": 0.467,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002242",
+        "name": "九阳股份",
+        "price": 38.56,
+        "buy_price": 38.56,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.01,
+        "amount": 4109000000.0000005,
+        "star": 2,
+        "score": 0.4496,
+        "conditions": {}
+      }
+    ]
+  },
+  "20261126": {
+    "scan_time": "2026-11-27 09:33:27",
+    "stocks": [
+      {
+        "code": "sz.300324",
+        "name": "旋极信息",
+        "price": 5.04,
+        "buy_price": 5.04,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 20.0,
+        "amount": 2531000000.0,
+        "star": 5,
+        "score": 0.729,
+        "conditions": {}
+      },
+      {
+        "code": "sz.000530",
+        "name": "冰山冷热",
+        "price": 16.17,
+        "buy_price": 16.17,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 2730000000.0,
+        "star": 4,
+        "score": 0.6095,
+        "conditions": {}
+      },
+      {
+        "code": "sh.603960",
+        "name": "克来机电",
+        "price": 20.46,
+        "buy_price": 20.46,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1305000000.0,
+        "star": 3,
+        "score": 0.5833,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600467",
+        "name": "好当家",
+        "price": 3.96,
+        "buy_price": 3.96,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.0,
+        "amount": 1551000000.0,
+        "star": 3,
+        "score": 0.5782,
+        "conditions": {}
+      },
+      {
+        "code": "sh.600814",
+        "name": "杭州解百",
+        "price": 9.19,
+        "buy_price": 9.19,
+        "signal_type": "breakthrough",
+        "is_limit_up": true,
+        "pct_change": 10.06,
+        "amount": 1493000000.0,
+        "star": 3,
+        "score": 0.5571,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002242",
+        "name": "九阳股份",
+        "price": 41.9,
+        "buy_price": 41.9,
+        "signal_type": "breakthrough",
+        "is_limit_up": false,
+        "pct_change": 8.66,
+        "amount": 5175000000.0,
+        "star": 3,
+        "score": 0.5357,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002122",
+        "name": "ST汇洲",
+        "price": 3.8,
+        "buy_price": 3.8,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 5.85,
+        "amount": 1748000000.0,
+        "star": 2,
+        "score": 0.4455,
+        "conditions": {}
+      },
+      {
+        "code": "sz.002548",
+        "name": "金新农",
+        "price": 5.33,
+        "buy_price": 5.33,
+        "signal_type": "gap",
+        "is_limit_up": false,
+        "pct_change": 6.39,
+        "amount": 1438000000.0,
+        "star": 2,
+        "score": 0.4059,
+        "conditions": {}
+      }
+    ]
   }
 }
